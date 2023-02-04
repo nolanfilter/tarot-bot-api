@@ -1,0 +1,25 @@
+{
+  "name": "tarot-bot-api",
+  "version": "0.1.0",
+  "description": "REST API for Tarot Bot",
+  "engines": {
+    "node": "16.x"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/test.js"
+  },
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nolanfilter/tarot-bot-api"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ]
+}

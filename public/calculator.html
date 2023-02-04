@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Calculator</title>
+</head>
+<body onload="layout()">
+
+<p>Let's Calculate The Deck State!</p>
+<div id="state">0</div><br />
+
+<div id="checkboxes"></div>
+
+<!-- EXAMPLE
+<div>
+    <input type="checkbox" id="The Fool" name="card" value="0x1" onclick="calculate( this )">
+    <label for="The Fool">The Fool</label>
+</div>
+-->
+
+<script>
+function layout()
+{
+    let checkboxRoot = document.getElementById( "checkboxes" );
+
+    fetch( "cards" )
+        .then( ( res ) => res.json() )
+        .then( ( data ) => 
+        {
+            for( let i = 0; i < data.response.length; i++ )
+            {
+                let cardName = data.response[ i ].name;
+                let cardID = data.response[ i ].id;
+
+                let parentElement = document.createElement( "div" );
+
+                let inputElement = document.createElement( "input" );
+                inputElement.type = "checkbox";
+                inputElement.name = "card";
+                inputElement.onclick = function() { calculate( inputElement ); };
+                inputElement.id = cardName;
+                inputElement.value = cardID;
+                parentElement.appendChild( inputElement );
+
+                let labelElement = document.createElement( "label" );
+                let textNode = document.createTextNode( cardName );
+                labelElement.setAttribute( "for", cardName );
+                labelElement.appendChild( textNode );
+                parentElement.appendChild( labelElement );
+
+                checkboxRoot.appendChild( parentElement );
+            }
+        });
+}
+
+function calculate( cardElement )
+{
+    let stateElement = document.getElementById( "state" );
+
+    let state = BigInt( stateElement.innerHTML );
+    let cardID = BigInt( cardElement.value );
+
+    if( cardElement.checked )
+    {
+        state = state | cardID;
+    }
+    else
+    {
+        state = state ^ cardID;
+    }
+
+    stateElement.innerHTML = state.toString();
+}
+</script>
+</body>
+</html>
