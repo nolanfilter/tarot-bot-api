@@ -6,14 +6,16 @@
 <body onload="layout()">
 
 <p>Let's Calculate The Deck State!</p>
-<div id="state">0</div><br />
+<div id="stateInt">0</div><br />
+<div id="stateText"></div><br /> 
+<!-- TODO finish state text -->
 
 <div id="checkboxes"></div>
 
 <!-- EXAMPLE
 <div>
-    <input type="checkbox" id="The Fool" name="card" value="0x1" onclick="calculate( this )">
-    <label for="The Fool">The Fool</label>
+    <input type="checkbox" id="ar00" name="card" value="0x1" onclick="calculate( this )">
+    <label for="ar00">The Fool</label>
 </div>
 -->
 
@@ -29,6 +31,7 @@ function layout()
             for( let i = 0; i < data.response.length; i++ )
             {
                 let cardName = data.response[ i ].name;
+                let careShortName = data.response[ i ].name_short;
                 let cardID = data.response[ i ].id;
 
                 let parentElement = document.createElement( "div" );
@@ -37,13 +40,13 @@ function layout()
                 inputElement.type = "checkbox";
                 inputElement.name = "card";
                 inputElement.onclick = function() { calculate( inputElement ); };
-                inputElement.id = cardName;
+                inputElement.id = careShortName;
                 inputElement.value = cardID;
                 parentElement.appendChild( inputElement );
 
                 let labelElement = document.createElement( "label" );
                 let textNode = document.createTextNode( cardName );
-                labelElement.setAttribute( "for", cardName );
+                labelElement.setAttribute( "for", careShortName );
                 labelElement.appendChild( textNode );
                 parentElement.appendChild( labelElement );
 
@@ -54,21 +57,33 @@ function layout()
 
 function calculate( cardElement )
 {
-    let stateElement = document.getElementById( "state" );
+    let stateIntElement = document.getElementById( "stateInt" );
+    let stateTextElement = document.getElementById( "stateText" );
 
-    let state = BigInt( stateElement.innerHTML );
-    let cardID = BigInt( cardElement.value );
+    let stateInt = BigInt( stateIntElement.innerHTML );
+    let cardIDInt = BigInt( cardElement.value );
+
+    let stateText = stateTextElement.innerHTML;
+    let cardIDText = cardElement.id;
 
     if( cardElement.checked )
     {
-        state = state | cardID;
+        stateInt = stateInt | cardIDInt;
+        stateText += ( stateText.length > 0 ? "," : "" ) + cardIDText;
     }
     else
     {
-        state = state ^ cardID;
+        stateInt = stateInt ^ cardIDInt;
+        stateText = stateText.replace( "," + cardIDText, "" ).replace( cardIDText, "" );
+
+        if( stateText[ 0 ] === "," )
+        {
+            stateText = stateText.replace( ",", "" );
+        }
     }
 
-    stateElement.innerHTML = state.toString();
+    stateIntElement.innerHTML = stateInt.toString();
+    stateTextElement.innerHTML = stateText;
 }
 </script>
 </body>

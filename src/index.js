@@ -1,5 +1,6 @@
 const express = require( 'express' )
 const app = express()
+
 const path = require( 'path' )
 const fs = require( 'fs' )
 const PORT = process.env.PORT || 3000
@@ -34,30 +35,35 @@ app.get( '/random', ( req, res ) =>
   if( req.query.deck )
   {
     cardPool = []
-    let cardNames = req.query.deck.split(",")
+    let deck = req.query.deck
 
-    for( let i = 0; i < cardNames.length; i++ )
+    let textState = true
+
+    try
     {
-      for( let j = 0; j < cards.length; j++ )
+      deck = BigInt( deck )
+      textState = false
+    }
+    catch (error) {}
+
+    if( textState )
+    {
+      for( let i = 0; i < cards.length; i++ )
       {
-        if( cardNames[ i ] === cards[ j ].name_short )
+        if( deck.indexOf( cards[ i ].name_short ) >= 0 )
         {
-          cardPool.push( cards[ j ] )
+          cardPool.push( cards[ i ] )
         }
       }
     }
-  }
-
-  if( req.query.deckState )
-  {
-    cardPool = []
-    let state = BigInt( req.query.deckState )
-
-    for( let i = 0; i < cards.length; i++ )
+    else
     {
-      if( state & BigInt( cards[ i ].id ) )
+      for( let i = 0; i < cards.length; i++ )
       {
-        cardPool.push( cards[ i ] )
+        if( deck & BigInt( cards[ i ].id ) )
+        {
+          cardPool.push( cards[ i ] )
+        }
       }
     }
   }
@@ -95,7 +101,7 @@ app.get( '/card', ( req, res ) =>
     {
       let cardName = cards[ i ].name.toLowerCase().replace( /\s/g, '' )
 
-      if( cardName.includes( queryName ) )
+      if( cardName.indexOf( queryName ) >= 0 )
       {
         card = cards[ i ]
         break;
@@ -173,3 +179,5 @@ function formatCard( card, reversed, images )
     more: getMore( card )
   }
 }
+
+module.exports = { app, cards, formatCard }
