@@ -157,7 +157,7 @@ app.get( '/daily', ( req, res ) =>
   else
   {
     let currentDate = new Date()
-    seed = ( currentDate.getMonth() + 1 ) * 1000000 + currentDate.getDate() * 10000 + currentDate.getFullYear()
+    seed = ( currentDate.getUTCMonth() + 1 ) * 1000000 + currentDate.getUTCDate() * 10000 + currentDate.getUTCFullYear()
   }
 
   let index = 0;
