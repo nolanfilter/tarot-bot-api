@@ -25,6 +25,11 @@ app.get( '/calculator', ( req, res ) =>
   res.sendFile( path.join( __dirname, '../public/calculator.html' ) )
 })
 
+app.get( '/reading', ( req, res ) =>
+{
+  res.sendFile( path.join( __dirname, '../public/reading.html' ) )
+})
+
 app.get( '/random', ( req, res ) =>
 {
   let response = null
