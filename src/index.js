@@ -230,6 +230,7 @@ function formatCard( card, reversed, images )
     reversed: reversed,
     keywords: ( reversed ? card.keywords_rev : card.keywords_up ),
     emoji: card.emoji,
+    description: card.desc,
     image: getImage( card.name_short, images, reversed ),
     bitmask: card.id,
     more: getMore( card )
