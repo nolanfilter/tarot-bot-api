@@ -1,9 +1,10 @@
 const express = require( 'express' )
 const app = express()
-
 const path = require( 'path' )
 const fs = require( 'fs' )
 const PORT = process.env.PORT || 3000
+
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 let cards_api = fs.readFileSync( path.join( __dirname, './data/cards-api.json' ),'utf8' )
 let parsedCardsJSON = JSON.parse( cards_api )
@@ -13,6 +14,11 @@ let image_urls = fs.readFileSync( path.join( __dirname, './data/image-urls.json'
 let images = JSON.parse( image_urls )
 let UP = 0
 let REV = 1
+
+// let fakeurl = encodeURIComponent( 'http://localhost:3000/custom' )
+
+// console.log( fakeurl )
+
 
 
 app.get( '/', ( req, res ) =>
@@ -30,7 +36,14 @@ app.get( '/reading', ( req, res ) =>
   res.sendFile( path.join( __dirname, '../public/reading.html' ) )
 })
 
-app.get( '/random', ( req, res ) =>
+// TODO cache?
+app.get( '/custom', ( req, res ) =>
+{
+  res.json( JSON.parse( fs.readFileSync( path.join( __dirname, './data/custom-image-urls.json' ) ) ) )
+})
+
+
+app.get( '/random', async ( req, res ) =>
 {
   let response = null
   let error = 'none'
@@ -73,6 +86,23 @@ app.get( '/random', ( req, res ) =>
     }
   }
 
+  imageLibrary = images
+
+  if( req.query.images )
+  {
+    let url = req.query.images
+
+    await fetch(url)
+    .then(res => res.json())
+    .then(out => {
+      // test if url exists
+      getImage( card.name_short, out, reversed )
+
+      imageLibrary = out
+    })
+    .catch();
+  }
+
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
   let reverseChance = 0.5
@@ -84,7 +114,7 @@ app.get( '/random', ( req, res ) =>
 
   let reversed = ( Math.random() < reverseChance )
 
-  response = formatCard( card, reversed, images )
+  response = formatCard( card, reversed, imageLibrary )
 
   res.status( 200 ).send({ 
       response: response,
@@ -92,7 +122,7 @@ app.get( '/random', ( req, res ) =>
   })
 })
 
-app.get( '/card', ( req, res ) =>
+app.get( '/card', async ( req, res ) =>
 {
   let response = null
   let error = 'none'
@@ -115,6 +145,23 @@ app.get( '/card', ( req, res ) =>
 
     if( card )
     {
+      imageLibrary = images
+
+      if( req.query.images )
+      {
+        let url = req.query.images
+
+        await fetch(url)
+        .then(res => res.json())
+        .then(out => {
+          // test if url exists
+          getImage( card.name_short, out, reversed )
+
+          imageLibrary = out
+        })
+        .catch(err => { console.log( err ) });
+      }
+
       var reversed = false 
 
       if( req.query.reversed )
@@ -122,7 +169,7 @@ app.get( '/card', ( req, res ) =>
         reversed = req.query.reversed
       }
 
-      response = formatCard( card, reversed, images )
+      response = formatCard( card, reversed, imageLibrary )
     }
     else
     {
