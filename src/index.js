@@ -15,7 +15,8 @@ let images = JSON.parse( image_urls )
 let UP = 0
 let REV = 1
 
-// let fakeurl = encodeURIComponent( 'http://localhost:3000/custom' )
+// let fakeurl = encodeURIComponent( 'localhost:3000/custom' )
+// let fakeurl = encodeURIComponent( 'https://tarot-bot-api.vercel.app/custom' )
 
 // console.log( fakeurl )
 
@@ -86,6 +87,17 @@ app.get( '/random', async ( req, res ) =>
     }
   }
 
+  let reverseChance = 0.5
+
+  if( req.query.reverseChance )
+  {
+      reverseChance = req.query.reverseChance
+  }
+
+  let reversed = ( Math.random() < reverseChance )
+
+  let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
+
   imageLibrary = images
 
   if( req.query.images )
@@ -102,17 +114,6 @@ app.get( '/random', async ( req, res ) =>
     })
     .catch();
   }
-
-  let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
-
-  let reverseChance = 0.5
-
-  if( req.query.reverseChance )
-  {
-      reverseChance = req.query.reverseChance
-  }
-
-  let reversed = ( Math.random() < reverseChance )
 
   response = formatCard( card, reversed, imageLibrary )
 
