@@ -37,12 +37,16 @@ app.get( '/reading', ( req, res ) =>
   res.sendFile( path.join( __dirname, '../public/reading.html' ) )
 })
 
+app.get( '/testreading', ( req, res ) =>
+{
+  res.sendFile( path.join( __dirname, '../public/test.html' ) )
+})
+
 // TODO cache?
 app.get( '/custom', ( req, res ) =>
 {
   res.json( JSON.parse( fs.readFileSync( path.join( __dirname, './data/custom-image-urls.json' ) ) ) )
 })
-
 
 app.get( '/random', async ( req, res ) =>
 {
@@ -228,6 +232,51 @@ app.get( '/daily', ( req, res ) =>
   let card = cards[ index ]
 
   response = formatCard( card, reversed, images )
+
+  res.status( 200 ).send({ 
+      response: response,
+      error: error
+  })
+})
+
+// TODO remove
+app.get( '/test', async ( req, res ) =>
+{
+  let response = null
+  let error = 'none'
+
+  let cardPool = []
+  let deck = BigInt( 11898478700280047271937 )
+
+  for( let i = 0; i < cards.length; i++ )
+  {
+    if( deck & BigInt( cards[ i ].id ) )
+    {
+      cardPool.push( cards[ i ] )
+    }
+  }
+
+  let reverseChance = 0.5
+  let reversed = ( Math.random() < reverseChance )
+
+  let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
+
+  imageLibrary = images
+
+  // let url = 'https%3A%2F%2Ftarot-bot-api.vercel.app%2Fcustom'
+  let url = 'https://tarot-bot-api.vercel.app/custom'
+
+  await fetch(url)
+  .then(res => res.json())
+  .then(out => {
+    // test if url exists
+    getImage( card.name_short, out, reversed )
+
+    imageLibrary = out
+  })
+  .catch();
+
+  response = formatCard( card, reversed, imageLibrary )
 
   res.status( 200 ).send({ 
       response: response,

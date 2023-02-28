@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Reading</title>
+</head>
+<body onload="randomize()">
+
+<p>Here's your reading!</p>
+<div id="title"></div><br />
+<div id="emoji"></div><br />
+<div id="keywords"></div><br />
+<img id="image" src=""></img>
+
+<script>
+function randomize()
+{
+    fetch( "test")
+        .then( ( res ) => res.json() )
+        .then( ( data ) => 
+        {
+            // TODO error checking
+            let card = data.response;
+
+            let titleElement = document.getElementById( "title" );
+            titleElement.innerHTML = card.title + ( card.reversed ? " (in reverse)" : "" );
+
+            let emojiElement = document.getElementById( "emoji" );
+            emojiElement.innerHTML = card.emoji;
+
+            let keywordsElement = document.getElementById( "keywords" );
+            keywordsElement.innerHTML = card.keywords;
+
+            let imageElement = document.getElementById( "image" );
+            imageElement.src = card.image;
+            imageElement.alt = card.description;
+        });
+}
+</script>
+</body>
+</html>
