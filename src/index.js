@@ -246,15 +246,30 @@ app.get( '/test', async ( req, res ) =>
   let error = 'none'
 
   let cardPool = []
-  let deck = BigInt( 87938498158546718363069 )
+  let deck = "ar00,ar02,ar03,ar04,ar05,ar07,ar08,ar11,ar16,ar10,waac,wa02,wa03,wa04,wa05,wa06,wapa,cuac,cu05,cu07,cu08,cupa,cuki,pe03,pe05,pe06,pe07,pe08,pe09,pekn,swac,sw02,sw03,sw04,sw05,sw08,sw10,swqu"
 
   for( let i = 0; i < cards.length; i++ )
   {
-    if( deck & BigInt( cards[ i ].id ) )
+    if( deck.indexOf( cards[ i ].name_short ) >= 0 )
     {
+      // console.log("adding card: " + cards[ i ].name)
+
       cardPool.push( cards[ i ] )
     }
   }
+
+  // TODO figure out why int deck state breaks
+  // let deck = BigInt( 87938498158546718363069 )
+
+  // for( let i = 0; i < cards.length; i++ )
+  // {
+  //   if( deck & BigInt( cards[ i ].id ) )
+  //   {
+  //     console.log("adding card: " + cards[ i ].name)
+
+  //     cardPool.push( cards[ i ] )
+  //   }
+  // }
 
   let reverseChance = 0.5
   let reversed = ( Math.random() < reverseChance )
@@ -270,6 +285,7 @@ app.get( '/test', async ( req, res ) =>
   .then(res => res.json())
   .then(out => {
     // test if url exists
+    // TODO check if url is empty
     getImage( card.name_short, out, reversed )
 
     imageLibrary = out
