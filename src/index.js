@@ -75,6 +75,8 @@ app.get( '/random', async ( req, res ) =>
       {
         if( deck.indexOf( cards[ i ].name_short ) >= 0 )
         {
+          // console.log("adding card: " + cards[ i ].name)
+
           cardPool.push( cards[ i ] )
         }
       }
@@ -85,6 +87,8 @@ app.get( '/random', async ( req, res ) =>
       {
         if( deck & BigInt( cards[ i ].id ) )
         {
+          // console.log("adding card: " + cards[ i ].name)
+
           cardPool.push( cards[ i ] )
         }
       }
@@ -246,11 +250,11 @@ app.get( '/test', async ( req, res ) =>
   let error = 'none'
 
   let cardPool = []
-  let deck = "ar00,ar02,ar03,ar04,ar05,ar07,ar08,ar11,ar16,ar10,waac,wa02,wa03,wa04,wa05,wa06,wapa,cuac,cu05,cu07,cu08,cupa,cuki,pe03,pe05,pe06,pe07,pe08,pe09,pekn,swac,sw02,sw03,sw04,sw05,sw08,sw10,swqu"
+  let deck = BigInt( 87938498440021695073725n )
 
   for( let i = 0; i < cards.length; i++ )
   {
-    if( deck.indexOf( cards[ i ].name_short ) >= 0 )
+    if( deck & BigInt( cards[ i ].id ) )
     {
       // console.log("adding card: " + cards[ i ].name)
 
@@ -258,14 +262,13 @@ app.get( '/test', async ( req, res ) =>
     }
   }
 
-  // TODO figure out why int deck state breaks
-  // let deck = BigInt( 87938498158546718363069 )
+  // let deck = "ar00,ar02,ar03,ar04,ar05,ar07,ar08,ar11,ar16,ar10,waac,wa02,wa03,wa04,wa05,wa06,wapa,cuac,cu05,cu07,cu08,cupa,cuki,pe03,pe05,pe06,pe07,pe08,pe09,pekn,swac,sw02,sw03,sw04,sw05,sw08,sw10,swqu"
 
   // for( let i = 0; i < cards.length; i++ )
   // {
-  //   if( deck & BigInt( cards[ i ].id ) )
+  //   if( deck.indexOf( cards[ i ].name_short ) >= 0 )
   //   {
-  //     console.log("adding card: " + cards[ i ].name)
+  //     // console.log("adding card: " + cards[ i ].name)
 
   //     cardPool.push( cards[ i ] )
   //   }
