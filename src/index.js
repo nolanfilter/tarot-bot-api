@@ -14,6 +14,7 @@ let image_urls = fs.readFileSync( path.join( __dirname, './data/image-urls.json'
 let images = JSON.parse( image_urls )
 let UP = 0
 let REV = 1
+let DESC = 2
 
 // let fakeurl = encodeURIComponent( 'localhost:3000/custom' )
 // let fakeurl = encodeURIComponent( 'https://tarot-bot-api.vercel.app/custom' )
@@ -104,6 +105,9 @@ app.get( '/random', async ( req, res ) =>
 
   let reversed = ( Math.random() < reverseChance )
 
+  // TODO add query parameter?
+  let reflectionIndex = Math.floor( Math.random() * 3 );
+  
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
   imageLibrary = images
@@ -123,7 +127,7 @@ app.get( '/random', async ( req, res ) =>
     .catch();
   }
 
-  response = formatCard( card, reversed, imageLibrary )
+  response = formatCard( card, reversed, imageLibrary, reflectionIndex )
 
   res.status( 200 ).send({ 
       response: response,
@@ -178,7 +182,10 @@ app.get( '/card', async ( req, res ) =>
         reversed = req.query.reversed
       }
 
-      response = formatCard( card, reversed, imageLibrary )
+      // TODO add query parameter?
+      let reflectionIndex = Math.floor( Math.random() * 3 );
+
+      response = formatCard( card, reversed, imageLibrary, reflectionIndex )
     }
     else
     {
@@ -223,6 +230,7 @@ app.get( '/daily', ( req, res ) =>
 
   let index = 0;
   let reversed = false;
+  let reflectionIndex = 0;
   
   try
   {
@@ -230,12 +238,13 @@ app.get( '/daily', ( req, res ) =>
 
     index = Math.floor( rand() * cards.length )
     reversed = ( rand() < 0.5 )
+    reflectionIndex = Math.floor( rand() * 3 );
   }
   catch (error) {}
 
   let card = cards[ index ]
 
-  response = formatCard( card, reversed, images )
+  response = formatCard( card, reversed, images, reflectionIndex )
 
   res.status( 200 ).send({ 
       response: response,
@@ -276,6 +285,9 @@ app.get( '/test', async ( req, res ) =>
 
   let reverseChance = 0.5
   let reversed = ( Math.random() < reverseChance )
+  
+  // TODO add query parameter?
+  let reflectionIndex = Math.floor( Math.random() * 3 );
 
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
@@ -295,7 +307,7 @@ app.get( '/test', async ( req, res ) =>
   })
   .catch();
 
-  response = formatCard( card, reversed, imageLibrary )
+  response = formatCard( card, reversed, imageLibrary, reflectionIndex )
 
   res.status( 200 ).send({ 
       response: response,
@@ -320,10 +332,26 @@ function mulberry32( a )
   }
 }
 
+function getDescription( key, images )
+{
+  // TODO null testing and replace with other image directory if necessary
+  return images[ key ][ DESC ]
+}
+
 function getImage( key, images, reversed )
 {
   // TODO null testing and replace with other image directory if necessary
   return ( reversed ? images[ key ][ REV ] : images[ key ][ UP ] )
+}
+
+function getReflection( card, reflectionIndex )
+{
+  if( card )
+  {
+    return card[ 'question_' + reflectionIndex ];
+  }
+
+  return ''
 }
 
 function getMore( card )
@@ -338,16 +366,16 @@ function getMore( card )
   return ''
 }
 
-function formatCard( card, reversed, images )
+function formatCard( card, reversed, images, reflectionIndex )
 {
   return {
     title: card.name,
-    description: card.description,
     reversed: reversed,
     keywords: ( reversed ? card.keywords_rev : card.keywords_up ),
     emoji: card.emoji,
-    description: card.desc,
+    description: getDescription( card.name_short, images ),
     image: getImage( card.name_short, images, reversed ),
+    reflection: getReflection( card, reflectionIndex ),
     bitmask: card.id,
     more: getMore( card )
   }

@@ -6,7 +6,12 @@
 <body onload="layout()">
 
 <p>Let's Calculate The Deck State!</p>
-<div id="stateInt">0</div><br />
+
+<div id="inputRoot">
+    <input type="text" id="stateInt" value="0">
+    <button type="button" onclick="reverseCalculate()">Show</button>
+</div><br />
+
 <div id="stateText"></div><br /> 
 
 <div id="checkboxes"></div>
@@ -59,7 +64,7 @@ function calculate( cardElement )
     let stateIntElement = document.getElementById( "stateInt" );
     let stateTextElement = document.getElementById( "stateText" );
 
-    let stateInt = BigInt( stateIntElement.innerHTML );
+    let stateInt = BigInt( stateIntElement.value );
     let cardIDInt = BigInt( cardElement.value );
 
     let stateText = stateTextElement.innerHTML;
@@ -81,7 +86,36 @@ function calculate( cardElement )
         }
     }
 
-    stateIntElement.innerHTML = stateInt.toString();
+    stateIntElement.value = stateInt;
+    stateTextElement.innerHTML = stateText;
+}
+
+function reverseCalculate()
+{
+    let stateIntElement = document.getElementById( "stateInt" );
+
+    let stateInt = BigInt( stateIntElement.value );
+    let stateText = "";
+
+    let checkboxRoot = document.getElementById( "checkboxes" );
+    let cardChildren = checkboxRoot.children;
+
+    for( let i = 0; i < cardChildren.length; i++ )
+    {
+        let cardElement = cardChildren[ i ].children[ 0 ];
+        
+        if( stateInt & BigInt( cardElement.value ) )
+        {
+            cardElement.checked = true;
+            stateText += ( stateText.length > 0 ? "," : "" ) + cardElement.id;
+        }
+        else
+        {
+            cardElement.checked = false;
+        }
+    }
+
+    let stateTextElement = document.getElementById( "stateText" );
     stateTextElement.innerHTML = stateText;
 }
 </script>
