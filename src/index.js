@@ -23,26 +23,6 @@ let DESC = 2
 
 
 
-app.get( '/', ( req, res ) =>
-{
-  res.send( 'Hi Witches!' )
-})
-
-app.get( '/calculator', ( req, res ) =>
-{
-  res.sendFile( path.join( __dirname, '../public/calculator.html' ) )
-})
-
-app.get( '/reading', ( req, res ) =>
-{
-  res.sendFile( path.join( __dirname, '../public/reading.html' ) )
-})
-
-app.get( '/testreading', ( req, res ) =>
-{
-  res.sendFile( path.join( __dirname, '../public/test.html' ) )
-})
-
 // TODO cache?
 app.get( '/custom', ( req, res ) =>
 {
@@ -380,5 +360,7 @@ function formatCard( card, reversed, images, reflectionIndex )
     more: getMore( card )
   }
 }
+
+require('./pages.js')(app)
 
 module.exports = { app, cards, formatCard }
