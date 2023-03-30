@@ -21,7 +21,7 @@ let DESC = 2
 
 // console.log( fakeurl )
 
-
+app.use('/public/css', express.static('public/css'));
 
 // TODO cache?
 app.get( '/custom', ( req, res ) =>
