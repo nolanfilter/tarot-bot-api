@@ -28,6 +28,6 @@ module.exports = function (app) {
       res.sendFile( path.join( __dirname, '../public/test.html' ) )
     })
 
-    app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile, { customCss: '.swagger-ui .topbar { display: none }' }))
+    app.use( '/doc', swaggerUi.serve, swaggerUi.setup( swaggerFile, { customCssUrl: '../public/css/swagger-ui.css' }))
 
 }
