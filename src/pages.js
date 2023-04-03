@@ -1,7 +1,7 @@
 const path = require( 'path' )
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('../docs/swagger-output.json')
-const options = { customCssUrl: '/css/swagger-ui.css' }
+const options = { customCssUrl: '/css/swagger-ui.css', customCss: '.swagger-ui .topbar { display: none }' }
 
 module.exports = function (app) {
 	
@@ -30,12 +30,4 @@ module.exports = function (app) {
     })
 
     app.use( '/doc', swaggerUi.serve, swaggerUi.setup( swaggerFile, options ) )
-
-    // app.use( '/doc', function( req, res, next ) {
-    //   swaggerFile.host = req.get( 'host' );
-    //   req.swaggerDoc = swaggerFile;
-    //   next();
-    // }, swaggerUi.serve, swaggerUi.setup( swaggerFile, { customCssUrl: '/public/css/swagger-ui.css' } ) )
-
-
 }

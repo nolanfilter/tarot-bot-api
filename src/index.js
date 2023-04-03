@@ -26,11 +26,13 @@ app.use( '/css', express.static( path.join( __dirname, './css' ) ) )
 // TODO cache?
 app.get( '/custom', ( req, res ) =>
 {
+// #swagger.ignore = true
   res.json( JSON.parse( fs.readFileSync( path.join( __dirname, './data/custom-image-urls.json' ) ) ) )
 })
 
 app.get( '/random', async ( req, res ) =>
 {
+// #swagger.description = 'Returns a random card'
   let response = null
   let error = 'none'
 
@@ -38,6 +40,7 @@ app.get( '/random', async ( req, res ) =>
 
   if( req.query.deck )
   {
+//  #swagger.parameters['deck'] = { description: 'Bit mask or string representation of subset of deck. Used to limit deck to major or minor arcana only, or remove cards from the deck as they’re drawn.' }
     cardPool = []
     let deck = req.query.deck
 
@@ -80,6 +83,7 @@ app.get( '/random', async ( req, res ) =>
 
   if( req.query.reverseChance )
   {
+//  #swagger.parameters['reverseChance'] = { description: 'Percent chance the card will be reversed. Default 0.5' }
       reverseChance = req.query.reverseChance
   }
 
@@ -94,6 +98,7 @@ app.get( '/random', async ( req, res ) =>
 
   if( req.query.images )
   {
+//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns' }
     let url = req.query.images
 
     await fetch(url)
@@ -117,12 +122,14 @@ app.get( '/random', async ( req, res ) =>
 
 app.get( '/card', async ( req, res ) =>
 {
+// #swagger.description = 'Returns a specific card'
   let response = null
   let error = 'none'
   let card = null;
 
   if( req.query.name )
   {
+//  #swagger.parameters['name'] = { description: 'String representation of the card' }
     let queryName = req.query.name.toLowerCase().replace( /\s/g, '' )
 
     for( let i = 0; i < cards.length; i++ )
@@ -142,6 +149,7 @@ app.get( '/card', async ( req, res ) =>
 
       if( req.query.images )
       {
+//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns' }
         let url = req.query.images
 
         await fetch(url)
@@ -159,6 +167,7 @@ app.get( '/card', async ( req, res ) =>
 
       if( req.query.reversed )
       {
+//  #swagger.parameters['reversed'] = { description: 'Return card as reversed. Default false' }
         reversed = req.query.reversed
       }
 
@@ -185,6 +194,7 @@ app.get( '/card', async ( req, res ) =>
 
 app.get( '/cards', ( req, res ) =>
 {
+// #swagger.description = 'Returns all cards'
   res.status( 200 ).send({ 
     response: cards,
     error: 'none'
@@ -193,6 +203,7 @@ app.get( '/cards', ( req, res ) =>
 
 app.get( '/daily', ( req, res ) =>
 {
+// #swagger.description = 'Returns a unique Tarot Card for the given date'
   let response = null
   let error = 'none'
 
@@ -200,6 +211,7 @@ app.get( '/daily', ( req, res ) =>
 
   if( req.query.date )
   {
+//  #swagger.parameters['reverseChance'] = { description: 'the day the returned card will represent in MMDDYYYY format. Default today' }
     seed = req.query.date
   }
   else
@@ -235,6 +247,7 @@ app.get( '/daily', ( req, res ) =>
 // TODO remove
 app.get( '/test', async ( req, res ) =>
 {
+// #swagger.ignore = true
   let response = null
   let error = 'none'
 

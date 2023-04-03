@@ -2,42 +2,32 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "REST API",
-    "description": ""
+    "title": "Tarot Bot API",
+    "description": "Everything you need for digital Tarot readings"
   },
-  "host": "localhost:3000",
+  "host": "tarot-bot-api.vercel.app",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": [],
   "paths": {
-    "/custom": {
-      "get": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/random": {
       "get": {
-        "description": "",
+        "description": "Returns a random card",
         "parameters": [
           {
             "name": "deck",
+            "description": "Bit mask or string representation of subset of deck. Used to limit deck to major or minor arcana only, or remove cards from the deck as they’re drawn.",
             "in": "query",
             "type": "string"
           },
           {
             "name": "reverseChance",
+            "description": "Percent chance the card will be reversed. Default 0.5",
             "in": "query",
             "type": "string"
           },
           {
             "name": "images",
+            "description": "The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns",
             "in": "query",
             "type": "string"
           }
@@ -51,20 +41,23 @@
     },
     "/card": {
       "get": {
-        "description": "",
+        "description": "Returns a specific card",
         "parameters": [
           {
             "name": "name",
+            "description": "String representation of the card",
             "in": "query",
             "type": "string"
           },
           {
             "name": "images",
+            "description": "The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns",
             "in": "query",
             "type": "string"
           },
           {
             "name": "reversed",
+            "description": "Return card as reversed. Default false",
             "in": "query",
             "type": "string"
           }
@@ -78,7 +71,7 @@
     },
     "/cards": {
       "get": {
-        "description": "",
+        "description": "Returns all cards",
         "parameters": [],
         "responses": {
           "200": {
@@ -89,25 +82,20 @@
     },
     "/daily": {
       "get": {
-        "description": "",
+        "description": "Returns a unique Tarot Card for the given date",
         "parameters": [
           {
             "name": "date",
             "in": "query",
             "type": "string"
+          },
+          {
+            "name": "reverseChance",
+            "description": "the day the returned card will represent in MMDDYYYY format. Default today",
+            "in": "query",
+            "type": "string"
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/test": {
-      "get": {
-        "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"

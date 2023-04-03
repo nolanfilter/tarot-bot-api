@@ -2,11 +2,12 @@ const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
   info: {
-    title: 'My API',
-    description: 'Description',
+    version: '1.0.0',
+    title: 'Tarot Bot API',
+    description: 'Everything you need for digital Tarot readings',
   },
-  host: 'localhost:3000',
-  schemes: ['http'],
+  host: 'tarot-bot-api.vercel.app',
+  schemes: [],
 };
 
 const outputFile = '../docs/swagger-output.json';
@@ -16,6 +17,6 @@ const endpointsFiles = ['./index.js'];
    'endpointsFiles' only the root file where the route starts,
    such as index.js, app.js, routes.js, ... */
 
-swaggerAutogen(outputFile, endpointsFiles).then(() => {
+swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
     require('./index.js')
 })
