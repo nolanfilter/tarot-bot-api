@@ -239,7 +239,7 @@ app.get( '/test', async ( req, res ) =>
   let error = 'none'
 
   let cardPool = []
-  let deck = BigInt( 87938498440021695073725n )
+  let deck = BigInt( 94446750484400694058941n )
 
   for( let i = 0; i < cards.length; i++ )
   {
