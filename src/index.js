@@ -211,7 +211,7 @@ app.get( '/daily', ( req, res ) =>
 
   if( req.query.date )
   {
-//  #swagger.parameters['reverseChance'] = { description: 'the day the returned card will represent in MMDDYYYY format. Default today' }
+//  #swagger.parameters['date'] = { description: 'the day the returned card will represent in MMDDYYYY format. Default today' }
     seed = req.query.date
   }
   else

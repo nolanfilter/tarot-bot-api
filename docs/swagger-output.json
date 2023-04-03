@@ -86,11 +86,6 @@
         "parameters": [
           {
             "name": "date",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "reverseChance",
             "description": "the day the returned card will represent in MMDDYYYY format. Default today",
             "in": "query",
             "type": "string"
