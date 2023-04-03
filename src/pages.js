@@ -28,10 +28,13 @@ module.exports = function (app) {
       res.sendFile( path.join( __dirname, '../public/test.html' ) )
     })
 
-    app.use( '/doc', function( req, res, next ) {
-      swaggerFile.host = req.get( 'host' );
-      req.swaggerDoc = swaggerFile;
-      next();
-    }, swaggerUi.serve, swaggerUi.setup( swaggerFile, { customCssUrl: '/public/css/swagger-ui.css' } ) )
+    app.use( '/doc', swaggerUi.serve, swaggerUi.setup( swaggerFile, { customCssUrl: '/css/swagger-ui.css' }))
+
+    // app.use( '/doc', function( req, res, next ) {
+    //   swaggerFile.host = req.get( 'host' );
+    //   req.swaggerDoc = swaggerFile;
+    //   next();
+    // }, swaggerUi.serve, swaggerUi.setup( swaggerFile, { customCssUrl: '/public/css/swagger-ui.css' } ) )
+
 
 }
