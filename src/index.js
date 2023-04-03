@@ -21,9 +21,7 @@ let DESC = 2
 
 // console.log( fakeurl )
 
-app.use( '/public', express.static( path.join( __dirname, './public' ) ) )
-// app.use( '/public/css', express.static( 'public/css' ) )
-// app.use( '/css', express.static( 'src/css' ) );
+app.use( '/css', express.static( path.join( __dirname, './css' ) ) )
 
 // TODO cache?
 app.get( '/custom', ( req, res ) =>
