@@ -242,7 +242,7 @@ app.get( '/daily', ( req, res ) =>
       response: {
         card: response,
         date: seed
-      }
+      },
       error: error
   })
 })
