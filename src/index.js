@@ -239,7 +239,10 @@ app.get( '/daily', ( req, res ) =>
   response = formatCard( card, reversed, images, reflectionIndex )
 
   res.status( 200 ).send({ 
-      response: response,
+      response: {
+        card: response,
+        date: seed
+      }
       error: error
   })
 })
