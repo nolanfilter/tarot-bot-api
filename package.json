@@ -9,8 +9,7 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "node src/test.js",
-    "swagger-autogen": "node ./src/swagger.js",
-    "vercel-build": "yum install libuuid-devel libmount-devel && cp /lib64/{libuuid,libmount,libblkid}.so.1 node_modules/canvas/build/Release/"
+    "swagger-autogen": "node ./src/swagger.js"
   },
   "dependencies": {
     "canvas": "^2.11.2",
