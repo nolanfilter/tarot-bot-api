@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "node src/test.js",
-    "swagger-autogen": "node ./src/swagger.js",
+    "swagger-autogen": "node ./src/swagger.js"
   },
   "dependencies": {
     "canvas": "^2.11.2",
