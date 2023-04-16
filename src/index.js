@@ -1,7 +1,13 @@
+if( process.env.NODE_ENV !== 'production' ) { 
+  require('dotenv').config(); 
+} 
+
 const express = require( 'express' )
 const app = express()
 const path = require( 'path' )
 const fs = require( 'fs' )
+const mergeImages = require("merge-images");
+const { Canvas, Image } = require('canvas');
 const PORT = process.env.PORT || 3000
 
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
@@ -247,6 +253,140 @@ app.get( '/daily', ( req, res ) =>
   })
 })
 
+app.get( '/spread', async ( req, res ) =>
+{
+  let url = ''
+  let response = []
+  let error = 'none'
+  let start = Date.now();
+
+  let cardPool = [...cards];
+
+  imageLibrary = images
+
+  // await fetch('https://tarot-bot-api.vercel.app/custom')
+  // .then(res => res.json())
+  // .then(out => {
+  //   // test if url exists
+  //   // TODO check if url is empty
+  //   // hardcoded check, should just incorporate deck ugh
+  //   getImage( 'ar00', out, false )
+
+  //   imageLibrary = out
+  // })
+  // .catch();
+
+  // TODO hardcoded
+  // populate card data
+  for( let i = 0; i < 3; i++ )
+  {
+    let index = Math.floor( Math.random() * cardPool.length );
+    // let index = i;
+    let card = cardPool[ index ];
+    let reversed = Math.random() < 0.5;
+    // let reversed = false;
+    let reflectionIndex = Math.floor( Math.random() * 3 );
+
+    response.push( formatCard( card, reversed, imageLibrary, reflectionIndex ) );
+    cardPool.splice( index, 1 );
+  }
+
+  // console.log(JSON.stringify(response));
+
+  // TODO hardcoded
+  let id = '900,530,0,0,300,0,600,0,' + response[0].id + ',' + response[0].reversed + ',' + response[1].id + ',' + response[1].reversed + ',' + response[2].id + ',' + response[2].reversed;
+
+  // console.log(id);
+
+  await fetch("https://cdn.builder.io/api/v2/content/spread?apiKey=" + process.env.BuilderIO_API_Public_Key + "&limit=1&query.name.$eq=" + encodeURIComponent(id))
+  .then(res => {
+    return res.json();
+  }).then(resp => {
+    // console.log(resp);
+    // TODO so much error checking
+    if( resp && resp.results.length > 0 )
+    {
+      url = resp.results[0].data.spreadImage;
+    }
+  }).catch((e) => console.log(e));
+
+  // console.log("url after search:" + url);
+
+  if( !url )
+  {
+    let imageData = ''
+
+    // TODO hardcoded
+    // build images
+    await mergeImages([
+      { src: response[0].image, x: 0, y: 0 },
+      { src: response[1].image, x: 300, y: 0 },
+      { src: response[2].image, x: 600, y: 0 },
+      ], {
+      width: 900,
+      height: 530,
+      Canvas: Canvas,
+      Image: Image,
+    })
+    .then(data => {
+      // console.log(data);
+      base64Data = data.replace(/^data:image\/png;base64,/, "");
+      // console.log(base64Data);
+      imageData = Buffer.from(base64Data, 'base64');
+    }).catch((e) => console.log(e));
+
+    // TODO replace with imgur?
+    // upload image to builder.io
+    await fetch("https://builder.io/api/v1/upload", {
+      method: "POST",
+      body: imageData,
+      headers: {
+       "Authorization": "Bearer " + process.env.BuilderIO_API_Private_Key, 
+       "Content-Type": "image/png"
+      },
+    }).then(res => {
+        return res.json();
+    }).then(resp => {
+      //  console.log(resp);
+      url = resp.url;
+    }).catch((e) => console.log(e));
+
+    // console.log("url after upload:" + url);
+
+    if( url ) {
+      // write metadata to builder.io for searchability
+      fetch("https://builder.io/api/v1/write/spread", {
+        method: "POST",
+        body: JSON.stringify({
+        "name": id,
+        "data": {
+          "spreadImage": url
+        },
+        "published": "published"
+      }),
+        headers: {
+        "Authorization": "Bearer " + process.env.BuilderIO_API_Private_Key,
+        "Content-Type": "application/json"
+        },
+      }).then(res => {
+            return res.json();
+      }).then(resp => {
+          // console.log(resp);
+      }).catch((e) => console.log(e));
+    }
+  }
+
+  res.status( 200 ).send({ 
+      response: {
+        image: url,
+        cards: response,
+        // TODO remove
+        time: ( Date.now() - start )
+      },
+      error: error
+  })
+})
+
 // TODO remove
 app.get( '/test', async ( req, res ) =>
 {
@@ -372,6 +512,7 @@ function formatCard( card, reversed, images, reflectionIndex )
     description: getDescription( card.name_short, images ),
     image: getImage( card.name_short, images, reversed ),
     reflection: getReflection( card, reflectionIndex ),
+    id: card.name_short,
     bitmask: card.id,
     more: getMore( card )
   }

@@ -12,7 +12,10 @@
     "swagger-autogen": "node ./src/swagger.js"
   },
   "dependencies": {
+    "canvas": "^2.11.2",
+    "dotenv": "^16.0.3",
     "express": "^4.15.2",
+    "merge-images": "^2.0.0",
     "node-fetch": "^3.3.0",
     "swagger-autogen": "^2.23.1",
     "swagger-ui-express": "^4.6.2"
