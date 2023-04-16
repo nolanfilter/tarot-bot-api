@@ -253,6 +253,7 @@ app.get( '/daily', ( req, res ) =>
   })
 })
 
+/*
 app.get( '/spread', async ( req, res ) =>
 {
   let url = ''
@@ -386,6 +387,7 @@ app.get( '/spread', async ( req, res ) =>
       error: error
   })
 })
+*/
 
 // TODO remove
 app.get( '/test', async ( req, res ) =>
