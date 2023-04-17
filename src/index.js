@@ -42,7 +42,7 @@ app.get( '/random', async ( req, res ) =>
 {
 // #swagger.description = 'Returns a random card'
   let response = null
-  let error = 'none'
+  let error = null
 
   let cardPool = cards
 
@@ -132,7 +132,7 @@ app.get( '/card', async ( req, res ) =>
 {
 // #swagger.description = 'Returns a specific card'
   let response = null
-  let error = 'none'
+  let error = null
   let card = null;
 
   if( req.query.name )
@@ -205,7 +205,7 @@ app.get( '/cards', ( req, res ) =>
 // #swagger.description = 'Returns all cards'
   res.status( 200 ).send({ 
     response: cards,
-    error: 'none'
+    error: null
   })
 })
 
@@ -213,7 +213,7 @@ app.get( '/daily', ( req, res ) =>
 {
 // #swagger.description = 'Returns a unique Tarot Card for the given date'
   let response = null
-  let error = 'none'
+  let error = null
 
   let seed = 0
 
@@ -260,7 +260,7 @@ app.get( '/spread', async ( req, res ) =>
 {
   let url = ''
   let response = []
-  let error = 'none'
+  let error = null
   let start = Date.now();
 
   let cardPool = [...cards];
@@ -444,7 +444,7 @@ app.get( '/test', async ( req, res ) =>
 {
 // #swagger.ignore = true
   let response = null
-  let error = 'none'
+  let error = null
 
   let cardPool = []
   let deck = BigInt( 94446750484400694058941n )
