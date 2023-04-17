@@ -367,7 +367,7 @@ app.get( '/spread', async ( req, res ) =>
 
     if( url ) {
       // write metadata to builder.io for searchability
-      fetch("https://builder.io/api/v1/write/spread", {
+      await fetch("https://builder.io/api/v1/write/spread", {
         method: "POST",
         body: JSON.stringify({
         "name": id,
