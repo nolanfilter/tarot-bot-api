@@ -6,8 +6,10 @@ const express = require( 'express' )
 const app = express()
 const path = require( 'path' )
 const fs = require( 'fs' )
-// const mergeImages = require("merge-images");
-// const { Canvas, Image } = require('canvas');
+
+const sharp = require("sharp");
+const { joinImages } = require("join-images");
+
 const PORT = process.env.PORT || 3000
 
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
@@ -253,7 +255,7 @@ app.get( '/daily', ( req, res ) =>
   })
 })
 
-/*
+
 app.get( '/spread', async ( req, res ) =>
 {
   let url = ''
@@ -317,24 +319,33 @@ app.get( '/spread', async ( req, res ) =>
   {
     let imageData = ''
 
+    const fimg0 = await fetch(response[0].image)
+    const fimgb0 = await fimg0.buffer()
+
+    const fimg1 = await fetch(response[1].image)
+    const fimgb1 = await fimg1.buffer()
+
+    const fimg2 = await fetch(response[2].image)
+    const fimgb2 = await fimg2.buffer()
+
     // TODO hardcoded
     // build images
-    await mergeImages([
-      { src: response[0].image, x: 0, y: 0 },
-      { src: response[1].image, x: 300, y: 0 },
-      { src: response[2].image, x: 600, y: 0 },
+    await joinImages([
+      { src: await sharp(fimgb0).resize(300,530).toBuffer() },
+      { src: await sharp(fimgb1).resize(300,530).toBuffer() },
+      { src: await sharp(fimgb2).resize(300,530).toBuffer() },
       ], {
-      width: 900,
-      height: 530,
-      Canvas: Canvas,
-      Image: Image,
+        direction: 'horiztonal',
+        color: { alpha: 255, b: 255, g: 255, r: 255 }
     })
-    .then(data => {
+    .then((img) => {
       // console.log(data);
-      base64Data = data.replace(/^data:image\/png;base64,/, "");
+      // base64Data = data.replace(/^data:image\/png;base64,/, "");
       // console.log(base64Data);
-      imageData = Buffer.from(base64Data, 'base64');
-    }).catch((e) => console.log(e));
+      return img.png().toBuffer();
+    })
+    .then(data => imageData = data )
+    .catch((e) => console.log(e));
 
     // TODO replace with imgur?
     // upload image to builder.io
@@ -387,7 +398,6 @@ app.get( '/spread', async ( req, res ) =>
       error: error
   })
 })
-*/
 
 // TODO remove
 app.get( '/test', async ( req, res ) =>
