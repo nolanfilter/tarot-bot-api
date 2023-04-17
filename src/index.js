@@ -6,8 +6,8 @@ const express = require( 'express' )
 const app = express()
 const path = require( 'path' )
 const fs = require( 'fs' )
-const mergeImages = require("merge-images");
-const { Canvas, Image } = require('canvas');
+// const mergeImages = require("merge-images");
+// const { Canvas, Image } = require('canvas');
 const PORT = process.env.PORT || 3000
 
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
@@ -253,6 +253,7 @@ app.get( '/daily', ( req, res ) =>
   })
 })
 
+/*
 app.get( '/spread', async ( req, res ) =>
 {
   let url = ''
@@ -386,6 +387,7 @@ app.get( '/spread', async ( req, res ) =>
       error: error
   })
 })
+*/
 
 // TODO remove
 app.get( '/test', async ( req, res ) =>
