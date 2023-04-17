@@ -267,21 +267,35 @@ app.get( '/spread', async ( req, res ) =>
 
   imageLibrary = images
 
-  // await fetch('https://tarot-bot-api.vercel.app/custom')
-  // .then(res => res.json())
-  // .then(out => {
-  //   // test if url exists
-  //   // TODO check if url is empty
-  //   // hardcoded check, should just incorporate deck ugh
-  //   getImage( 'ar00', out, false )
+  await fetch('https://tarot-bot-api.vercel.app/custom')
+  .then(res => res.json())
+  .then(out => {
+    // test if url exists
+    // TODO check if url is empty
+    // hardcoded check, should just incorporate deck ugh
+    getImage( 'ar00', out, false )
 
-  //   imageLibrary = out
-  // })
-  // .catch();
+    imageLibrary = out
+  })
+  .catch();
+
+  let layout = '900,530,0,0,300,0,600,0'
+
+  // TODO error checking
+  if( req.query.format )
+  {
+    layout = req.query.format;
+  }
+
+  let coordinates = layout.split(',').map(Number);
+
+  let numCards = ( coordinates.length / 2 ) - 1;
+
+  let id = layout;
 
   // TODO hardcoded
   // populate card data
-  for( let i = 0; i < 3; i++ )
+  for( let i = 0; i < numCards; i++ )
   {
     let index = Math.floor( Math.random() * cardPool.length );
     // let index = i;
@@ -292,12 +306,11 @@ app.get( '/spread', async ( req, res ) =>
 
     response.push( formatCard( card, reversed, imageLibrary, reflectionIndex ) );
     cardPool.splice( index, 1 );
+
+    id += ',' + card.name_short + ',' + reversed;
   }
 
   // console.log(JSON.stringify(response));
-
-  // TODO hardcoded
-  let id = '900,530,0,0,300,0,600,0,' + response[0].id + ',' + response[0].reversed + ',' + response[1].id + ',' + response[1].reversed + ',' + response[2].id + ',' + response[2].reversed;
 
   // console.log(id);
 
@@ -317,26 +330,53 @@ app.get( '/spread', async ( req, res ) =>
 
   if( !url )
   {
-    let imageData = ''
+    let imageData = []
 
-    const fimg0 = await fetch(response[0].image)
-    const fimgb0 = await fimg0.buffer()
+    let width = coordinates[0];
+    let height = coordinates[1];
 
-    const fimg1 = await fetch(response[1].image)
-    const fimgb1 = await fimg1.buffer()
+    let currentX = 0;
+    let currentY = 0;
 
-    const fimg2 = await fetch(response[2].image)
-    const fimgb2 = await fimg2.buffer()
+    // TODO error checking
+    for( let i = 0; i < numCards; i++ )
+    {
+      console.log( JSON.stringify( response[ i ] ) );
 
-    // TODO hardcoded
+      let url = response[i].image;
+
+      if( !url )
+      {
+        url = getImage( response[ i ].id, images, response[ i ].reversed );
+      }
+
+      let fimg = await fetch( url );
+      let fimgb = await fimg.buffer();
+      let src = await sharp(fimgb).resize(300,530).toBuffer();
+
+      imageData.push({
+        src: src,
+        offsetX: coordinates[ i * 2 + 2 ],
+        offsetY: coordinates[ i * 2 + 3 ] - currentY,
+      })
+
+      currentY = coordinates[ i * 2 + 3 ] + 530;
+    }
+
+    if( currentY < height )
+    {
+      imageData.push({
+        src: path.join( __dirname, './data/empty.png' ),
+        offsetX: 0,
+        offsetY: height - currentY - 1,
+      })
+    }
+
     // build images
-    await joinImages([
-      { src: await sharp(fimgb0).resize(300,530).toBuffer() },
-      { src: await sharp(fimgb1).resize(300,530).toBuffer() },
-      { src: await sharp(fimgb2).resize(300,530).toBuffer() },
-      ], {
-        direction: 'horiztonal',
-        color: { alpha: 255, b: 255, g: 255, r: 255 }
+    await joinImages(
+      imageData,
+      {
+        color: { alpha: 0, b: 0, g: 0, r: 0 }
     })
     .then((img) => {
       // console.log(data);
