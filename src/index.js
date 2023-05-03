@@ -446,18 +446,20 @@ app.get( '/test', async ( req, res ) =>
   let response = null
   let error = null
 
-  let cardPool = []
-  let deck = BigInt( 94446750484400694058941n )
+  let cardPool = cards
 
-  for( let i = 0; i < cards.length; i++ )
-  {
-    if( deck & BigInt( cards[ i ].id ) )
-    {
-      // console.log("adding card: " + cards[ i ].name)
+  // let cardPool = []
+  // let deck = BigInt( 94446750484400694058941n )
 
-      cardPool.push( cards[ i ] )
-    }
-  }
+  // for( let i = 0; i < cards.length; i++ )
+  // {
+  //   if( deck & BigInt( cards[ i ].id ) )
+  //   {
+  //     // console.log("adding card: " + cards[ i ].name)
+
+  //     cardPool.push( cards[ i ] )
+  //   }
+  // }
 
   // let deck = "ar00,ar02,ar03,ar04,ar05,ar07,ar08,ar11,ar16,ar10,waac,wa02,wa03,wa04,wa05,wa06,wapa,cuac,cu05,cu07,cu08,cupa,cuki,pe03,pe05,pe06,pe07,pe08,pe09,pekn,swac,sw02,sw03,sw04,sw05,sw08,sw10,swqu"
 
