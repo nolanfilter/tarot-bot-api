@@ -209,7 +209,7 @@ app.get( '/cards', ( req, res ) =>
   })
 })
 
-app.get( '/daily', ( req, res ) =>
+app.get( '/daily', async ( req, res ) =>
 {
 // #swagger.description = 'Returns a unique Tarot Card for the given date'
   let response = null
