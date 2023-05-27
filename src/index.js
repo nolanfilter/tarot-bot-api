@@ -244,7 +244,21 @@ app.get( '/daily', ( req, res ) =>
 
   let card = cards[ index ]
 
-  response = formatCard( card, reversed, images, reflectionIndex )
+  imageLibrary = images
+
+  await fetch('https://tarot-bot-api.vercel.app/custom')
+  .then(res => res.json())
+  .then(out => {
+    // test if url exists
+    // TODO check if url is empty
+    // hardcoded check, should just incorporate deck ugh
+    getImage( card.name_short, out, false )
+
+    imageLibrary = out
+  })
+  .catch();
+
+  response = formatCard( card, reversed, imageLibrary, reflectionIndex )
 
   res.status( 200 ).send({ 
       response: {
