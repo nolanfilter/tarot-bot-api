@@ -209,6 +209,12 @@ app.get( '/cards', ( req, res ) =>
   })
 })
 
+// TODO cleanup
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
 app.get( '/daily', async ( req, res ) =>
 {
 // #swagger.description = 'Returns a unique Tarot Card for the given date'
@@ -259,11 +265,15 @@ app.get( '/daily', async ( req, res ) =>
   .catch();
 
   response = formatCard( card, reversed, imageLibrary, reflectionIndex )
+  
+  let dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
+                      + monthNames[ Math.floor( seed / 1000000 ) ];
 
   res.status( 200 ).send({ 
       response: {
         card: response,
-        date: seed
+        date: seed,
+        dateString: dateString
       },
       error: error
   })
