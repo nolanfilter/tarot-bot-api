@@ -211,7 +211,7 @@ app.get( '/cards', ( req, res ) =>
 
 // TODO cleanup
 const monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
+  'Smarch', 'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
