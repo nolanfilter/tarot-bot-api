@@ -96,9 +96,6 @@ app.get( '/random', async ( req, res ) =>
   }
 
   let reversed = ( Math.random() < reverseChance )
-
-  // TODO add query parameter?
-  let reflectionIndex = Math.floor( Math.random() * 3 );
   
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
@@ -120,7 +117,7 @@ app.get( '/random', async ( req, res ) =>
     .catch();
   }
 
-  response = formatCard( card, reversed, imageLibrary, reflectionIndex )
+  response = formatCard( card, reversed, imageLibrary )
 
   res.status( 200 ).send({ 
       response: response,
@@ -179,10 +176,7 @@ app.get( '/card', async ( req, res ) =>
         reversed = req.query.reversed
       }
 
-      // TODO add query parameter?
-      let reflectionIndex = Math.floor( Math.random() * 3 );
-
-      response = formatCard( card, reversed, imageLibrary, reflectionIndex )
+      response = formatCard( card, reversed, imageLibrary )
     }
     else
     {
@@ -236,7 +230,6 @@ app.get( '/daily', async ( req, res ) =>
 
   let index = 0;
   let reversed = false;
-  let reflectionIndex = 0;
   
   try
   {
@@ -244,7 +237,6 @@ app.get( '/daily', async ( req, res ) =>
 
     index = Math.floor( rand() * cards.length )
     reversed = ( rand() < 0.5 )
-    reflectionIndex = Math.floor( rand() * 3 );
   }
   catch (error) {}
 
@@ -264,7 +256,7 @@ app.get( '/daily', async ( req, res ) =>
   })
   .catch();
 
-  response = formatCard( card, reversed, imageLibrary, reflectionIndex )
+  response = formatCard( card, reversed, imageLibrary )
   
   let dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
                       + monthNames[ Math.floor( seed / 1000000 ) ];
@@ -326,9 +318,8 @@ app.get( '/spread', async ( req, res ) =>
     let card = cardPool[ index ];
     let reversed = Math.random() < 0.5;
     // let reversed = false;
-    let reflectionIndex = Math.floor( Math.random() * 3 );
 
-    response.push( formatCard( card, reversed, imageLibrary, reflectionIndex ) );
+    response.push( formatCard( card, reversed, imageLibrary ) );
     cardPool.splice( index, 1 );
 
     id += ',' + card.name_short + ',' + reversed;
@@ -499,9 +490,6 @@ app.get( '/test', async ( req, res ) =>
 
   let reverseChance = 0.5
   let reversed = ( Math.random() < reverseChance )
-  
-  // TODO add query parameter?
-  let reflectionIndex = Math.floor( Math.random() * 3 );
 
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
@@ -521,7 +509,7 @@ app.get( '/test', async ( req, res ) =>
   })
   .catch();
 
-  response = formatCard( card, reversed, imageLibrary, reflectionIndex )
+  response = formatCard( card, reversed, imageLibrary )
 
   res.status( 200 ).send({ 
       response: response,
@@ -558,16 +546,6 @@ function getImage( key, images, reversed )
   return ( reversed ? images[ key ][ REV ] : images[ key ][ UP ] )
 }
 
-function getReflection( card, reflectionIndex )
-{
-  if( card )
-  {
-    return card[ 'question_' + reflectionIndex ];
-  }
-
-  return ''
-}
-
 function getMore( card )
 {
   if( card ) 
@@ -580,7 +558,7 @@ function getMore( card )
   return ''
 }
 
-function formatCard( card, reversed, images, reflectionIndex )
+function formatCard( card, reversed, images )
 {
   return {
     title: card.name,
@@ -589,7 +567,7 @@ function formatCard( card, reversed, images, reflectionIndex )
     emoji: card.emoji,
     description: getDescription( card.name_short, images ),
     image: getImage( card.name_short, images, reversed ),
-    reflection: getReflection( card, reflectionIndex ),
+    questions: [ card.question_0, card.question_1, card.question_2 ],
     id: card.name_short,
     bitmask: card.id,
     more: getMore( card )
