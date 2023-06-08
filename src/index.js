@@ -18,11 +18,16 @@ let cards_api = fs.readFileSync( path.join( __dirname, './data/cards-api.json' )
 let parsedCardsJSON = JSON.parse( cards_api )
 let cards = parsedCardsJSON.cards
 
-let image_urls = fs.readFileSync( path.join( __dirname, './data/image-urls.json' ),'utf8' )
-let images = JSON.parse( image_urls )
 let UP = 0
 let REV = 1
 let DESC = 2
+
+let rws_image_urls = fs.readFileSync( path.join( __dirname, './data/image-urls.json' ),'utf8' )
+let rws_images = JSON.parse( rws_image_urls )
+
+let tb_image_urls = fs.readFileSync( path.join( __dirname, './data/custom-image-urls.json' ),'utf8' )
+let tb_images = JSON.parse( tb_image_urls )
+
 
 // let fakeurl = encodeURIComponent( 'localhost:3000/custom' )
 // let fakeurl = encodeURIComponent( 'https://tarot-bot-api.vercel.app/custom' )
@@ -99,7 +104,7 @@ app.get( '/random', async ( req, res ) =>
   
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
-  imageLibrary = images
+  imageLibrary = rws_images
 
   if( req.query.images )
   {
@@ -150,7 +155,7 @@ app.get( '/card', async ( req, res ) =>
 
     if( card )
     {
-      imageLibrary = images
+      imageLibrary = rws_images
 
       if( req.query.images )
       {
@@ -242,19 +247,19 @@ app.get( '/daily', async ( req, res ) =>
 
   let card = cards[ index ]
 
-  imageLibrary = images
+  imageLibrary = tb_images
 
-  await fetch('https://tarot-bot-api.vercel.app/custom')
-  .then(res => res.json())
-  .then(out => {
-    // test if url exists
-    // TODO check if url is empty
-    // hardcoded check, should just incorporate deck ugh
-    getImage( card.name_short, out, false )
+  // await fetch('https://tarot-bot-api.vercel.app/custom')
+  // .then(res => res.json())
+  // .then(out => {
+  //   // test if url exists
+  //   // TODO check if url is empty
+  //   // hardcoded check, should just incorporate deck ugh
+  //   getImage( card.name_short, out, false )
 
-    imageLibrary = out
-  })
-  .catch();
+  //   imageLibrary = out
+  // })
+  // .catch();
 
   response = formatCard( card, reversed, imageLibrary )
   
@@ -281,19 +286,19 @@ app.get( '/spread', async ( req, res ) =>
 
   let cardPool = [...cards];
 
-  imageLibrary = images
+  imageLibrary = tb_images
 
-  await fetch('https://tarot-bot-api.vercel.app/custom')
-  .then(res => res.json())
-  .then(out => {
-    // test if url exists
-    // TODO check if url is empty
-    // hardcoded check, should just incorporate deck ugh
-    getImage( 'ar00', out, false )
+  // await fetch('https://tarot-bot-api.vercel.app/custom')
+  // .then(res => res.json())
+  // .then(out => {
+  //   // test if url exists
+  //   // TODO check if url is empty
+  //   // hardcoded check, should just incorporate deck ugh
+  //   getImage( 'ar00', out, false )
 
-    imageLibrary = out
-  })
-  .catch();
+  //   imageLibrary = out
+  // })
+  // .catch();
 
   let layout = '900,530,0,0,300,0,600,0'
 
@@ -362,7 +367,7 @@ app.get( '/spread', async ( req, res ) =>
 
       if( !url )
       {
-        url = getImage( response[ i ].id, images, response[ i ].reversed );
+        url = getImage( response[ i ].id, rws_images, response[ i ].reversed );
       }
 
       let fimg = await fetch( url );
@@ -493,21 +498,21 @@ app.get( '/test', async ( req, res ) =>
 
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
-  imageLibrary = images
+  imageLibrary = tb_images
 
   // let url = 'https%3A%2F%2Ftarot-bot-api.vercel.app%2Fcustom'
-  let url = 'https://tarot-bot-api.vercel.app/custom'
+  // let url = 'https://tarot-bot-api.vercel.app/custom'
 
-  await fetch(url)
-  .then(res => res.json())
-  .then(out => {
-    // test if url exists
-    // TODO check if url is empty
-    getImage( card.name_short, out, reversed )
+  // await fetch(url)
+  // .then(res => res.json())
+  // .then(out => {
+  //   // test if url exists
+  //   // TODO check if url is empty
+  //   getImage( card.name_short, out, reversed )
 
-    imageLibrary = out
-  })
-  .catch();
+  //   imageLibrary = out
+  // })
+  // .catch();
 
   response = formatCard( card, reversed, imageLibrary )
 
