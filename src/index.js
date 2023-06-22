@@ -37,11 +37,11 @@ let tb_images = JSON.parse( tb_image_urls )
 app.use( '/css', express.static( path.join( __dirname, './css' ) ) )
 
 // TODO cache?
-app.get( '/custom', ( req, res ) =>
-{
-// #swagger.ignore = true
-  res.json( JSON.parse( fs.readFileSync( path.join( __dirname, './data/custom-image-urls.json' ) ) ) )
-})
+// app.get( '/custom', ( req, res ) =>
+// {
+// // #swagger.ignore = true
+//   res.json( JSON.parse( fs.readFileSync( path.join( __dirname, './data/custom-image-urls.json' ) ) ) )
+// })
 
 app.get( '/random', async ( req, res ) =>
 {
@@ -104,23 +104,8 @@ app.get( '/random', async ( req, res ) =>
   
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
-  imageLibrary = rws_images
-
-  if( req.query.images )
-  {
 //  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns' }
-    let url = req.query.images
-
-    await fetch(url)
-    .then(res => res.json())
-    .then(out => {
-      // test if url exists
-      getImage( card.name_short, out, reversed )
-
-      imageLibrary = out
-    })
-    .catch();
-  }
+  imageLibrary = await getImageLibrary( req.query.images, card.name_short, reversed );
 
   response = formatCard( card, reversed, imageLibrary )
 
@@ -155,23 +140,8 @@ app.get( '/card', async ( req, res ) =>
 
     if( card )
     {
-      imageLibrary = rws_images
-
-      if( req.query.images )
-      {
 //  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns' }
-        let url = req.query.images
-
-        await fetch(url)
-        .then(res => res.json())
-        .then(out => {
-          // test if url exists
-          getImage( card.name_short, out, reversed )
-
-          imageLibrary = out
-        })
-        .catch(err => { console.log( err ) });
-      }
+      imageLibrary = await getImageLibrary( req.query.images, card.name_short, reversed );
 
       var reversed = false 
 
@@ -537,6 +507,43 @@ function mulberry32( a )
     t = t + Math.imul( t ^ t >>> 7, 61 | t ) ^ t;
     return ( ( t ^ t >>> 14 ) >>> 0 ) / 4294967296;
   }
+}
+
+async function getImageLibrary( images, cardName, reversed )
+{
+  if( images )
+  {
+    let macro = images.toLowerCase();
+
+    if( macro === "rws" || macro === "rider-waite" || macro === "rider-waite-smith" )
+    {
+      return rws_images;
+    }
+
+    if( macro === "tarotbot" )
+    {
+      return tb_images;
+    }
+
+    // default
+    let imageLibrary = rws_images;
+    
+    await fetch(images)
+    .then(res => res.json())
+    .then(out => {
+      // test if url exists
+      if( out && out[ cardName ][ reversed ? REV : UP ] )
+      {
+        imageLibrary = out;
+      }
+    })
+    .catch(err => { console.log( err ) });
+
+    return imageLibrary;
+  }
+
+  // default
+  return rws_images;
 }
 
 function getDescription( key, images )
