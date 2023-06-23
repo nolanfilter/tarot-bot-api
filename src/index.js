@@ -520,7 +520,7 @@ async function getImageLibrary( images, cardName, reversed )
       return rws_images;
     }
 
-    if( macro === "tarotbot" )
+    if( macro === "tarotbot" || macro === "tb" )
     {
       return tb_images;
     }
