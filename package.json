@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "REST API for Tarot Bot",
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "main": "src/index.js",
   "scripts": {
