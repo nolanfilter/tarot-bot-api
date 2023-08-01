@@ -97,6 +97,23 @@
           }
         }
       }
+    },
+    "/spread": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   }
 }

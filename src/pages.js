@@ -29,5 +29,5 @@ module.exports = function (app) {
       res.sendFile( path.join( __dirname, '../public/test.html' ) )
     })
 
-    app.use( '/doc', swaggerUi.serve, swaggerUi.setup( swaggerFile, options ) )
+    app.use( '/docs', swaggerUi.serve, swaggerUi.setup( swaggerFile, options ) )
 }
