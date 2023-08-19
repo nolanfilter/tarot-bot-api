@@ -335,18 +335,26 @@ app.get( '/spread', async ( req, res ) =>
     // TODO error checking
     for( let i = 0; i < numCards; i++ )
     {
-      console.log( JSON.stringify( response[ i ] ) );
+      // console.log( JSON.stringify( response[ i ] ) );
 
-      let url = response[i].image;
+      let url = response[ i ].image;
 
       if( !url )
       {
         url = getImage( response[ i ].id, rws_images, response[ i ].reversed );
       }
 
+      // TODO only resize if size is wrong
       let fimg = await fetch( url );
       let fimgb = await fimg.buffer();
-      let src = await sharp(fimgb).resize(300,530).toBuffer();
+      let simg = sharp( fimgb );
+
+      if( response[ i ].width != 300 || response[ i ].height != 530 )
+      {
+        simg = simg.resize( 300,530 );
+      }
+
+      let src = await simg.toBuffer();
 
       imageData.push({
         src: src,
