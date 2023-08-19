@@ -18,10 +18,6 @@ let cards_api = fs.readFileSync( path.join( __dirname, './data/cards-api.json' )
 let parsedCardsJSON = JSON.parse( cards_api )
 let cards = parsedCardsJSON.cards
 
-let UP = 0
-let REV = 1
-let DESC = 2
-
 let rws_image_urls = fs.readFileSync( path.join( __dirname, './data/image-urls.json' ),'utf8' )
 let rws_images = JSON.parse( rws_image_urls )
 
@@ -48,6 +44,9 @@ app.get( '/random', async ( req, res ) =>
 // #swagger.description = 'Returns a random card'
   let response = null
   let error = null
+  
+  // let start = Date.now();
+  // console.log( 'start: ' + start );
 
   let cardPool = cards
 
@@ -108,6 +107,11 @@ app.get( '/random', async ( req, res ) =>
   imageLibrary = await getImageLibrary( req.query.images, card.name_short, reversed );
 
   response = formatCard( card, reversed, imageLibrary )
+
+  // let end = Date.now();
+
+  // console.log( 'end: ' + end );
+  // console.log( 'delta: ' + ( end - start ) );
 
   res.status( 200 ).send({ 
       response: response,
@@ -532,7 +536,7 @@ async function getImageLibrary( images, cardName, reversed )
     .then(res => res.json())
     .then(out => {
       // test if url exists
-      if( out && out[ cardName ][ reversed ? REV : UP ] )
+      if( out && out[ cardName ][ reversed ? "reversed" : "upright" ] )
       {
         imageLibrary = out;
       }
@@ -549,25 +553,76 @@ async function getImageLibrary( images, cardName, reversed )
 function getDescription( key, images )
 {
   // TODO null testing and replace with other image directory if necessary
-  return images[ key ][ DESC ]
+  return images[ key ].description
 }
 
 function getImage( key, images, reversed )
 {
   // TODO null testing and replace with other image directory if necessary
-  return ( reversed ? images[ key ][ REV ] : images[ key ][ UP ] )
+  return ( reversed ? images[ key ].reversed : images[ key ].upright )
+}
+
+function getWidth( key, images )
+{
+  // TODO null testing and replace with other image directory if necessary
+  return images[ key ].width
+}
+
+function getHeight( key, images )
+{
+  // TODO null testing and replace with other image directory if necessary
+  return images[ key ].height
 }
 
 function getMore( card )
 {
   if( card ) 
   {
-    return 'https://library.tarotbot.cards/' + card.arcana + '-arcana/' +
-      ( card.suit ? 'suit-of-' + card.suit + '/' : card.value + '-' ) + 
+    return 'https://tarotbot.cards/' + 
+      ( card.suit ? 'suit-of-' + card.suit + '/' : 'major-arcana/' ) + 
       card.name.toLowerCase().replace( /\s/g, '-' )
   }
 
   return ''
+}
+
+function getHasSizes( key, images )
+{
+  if( images && images[ key ] )
+  {
+    return images[ key ][ 'sizes' ]
+  }
+
+  return false
+}
+
+function getImageData( key, images, reversed )
+{
+  // TODO so much error checking
+  if( images && images[ key ] && images[ key ].sizes )
+  {
+    let image_data = {
+      sizes: []
+    }
+    
+    let sizes = images[ key ].sizes.sort((a,b) => a.width - b.width);
+
+    for( let i = 0; i < sizes.length; i++ )
+    {
+      let size = sizes[ i ].size
+
+      image_data.sizes.push( size )
+      image_data[ size ] = {
+        url: ( reversed ? sizes[ i ].reversed : sizes[ i ].upright ),
+        width: sizes[ i ].width,
+        height: sizes[ i ].height
+      }
+    }
+
+    return image_data
+  }
+
+  return []
 }
 
 function formatCard( card, reversed, images )
@@ -579,6 +634,9 @@ function formatCard( card, reversed, images )
     emoji: card.emoji,
     description: getDescription( card.name_short, images ),
     image: getImage( card.name_short, images, reversed ),
+    width: getWidth( card.name_short, images ),
+    height: getHeight( card.name_short, images ),
+    ...getHasSizes( card.name_short, images ) && { image_data: getImageData( card.name_short, images, reversed ) },
     questions: [ card.question_0, card.question_1, card.question_2 ],
     id: card.name_short,
     bitmask: card.id,
