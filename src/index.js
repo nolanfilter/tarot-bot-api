@@ -640,6 +640,7 @@ function formatCard( card, reversed, images )
     reversed: reversed,
     keywords: ( reversed ? card.keywords_rev : card.keywords_up ),
     emoji: card.emoji,
+    meaning: ( reversed ? card.meaning_rev : card.meaning_up ),
     description: getDescription( card.name_short, images ),
     image: getImage( card.name_short, images, reversed ),
     width: getWidth( card.name_short, images ),
