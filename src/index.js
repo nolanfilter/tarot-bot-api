@@ -586,8 +586,7 @@ function getMore( card, images )
 {
   if( card ) 
   {
-    // TODO hardcoded
-    if( images === tb_images )
+    if( images.tb )
     {
       return 'https://tarotbot.cards/' + 
         ( card.suit ? 'suit-of-' + card.suit + '/' : 'major-arcana/' ) + 
