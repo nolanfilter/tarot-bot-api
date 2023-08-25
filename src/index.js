@@ -582,13 +582,23 @@ function getHeight( key, images )
   return images[ key ].height
 }
 
-function getMore( card )
+function getMore( card, images )
 {
   if( card ) 
   {
-    return 'https://tarotbot.cards/' + 
-      ( card.suit ? 'suit-of-' + card.suit + '/' : 'major-arcana/' ) + 
-      card.name.toLowerCase().replace( /\s/g, '-' )
+    // TODO hardcoded
+    if( images === tb_images )
+    {
+      return 'https://tarotbot.cards/' + 
+        ( card.suit ? 'suit-of-' + card.suit + '/' : 'major-arcana/' ) + 
+        card.name.toLowerCase().replace( /\s/g, '-' )
+    }
+    else
+    {
+      return 'https://rws.tarotbot.cards/' + card.arcana + '-arcana/' +
+        ( card.suit ? 'suit-of-' + card.suit + '/' : card.value + '-' ) + 
+        card.name.toLowerCase().replace( /\s/g, '-' )
+    }
   }
 
   return ''
@@ -649,7 +659,7 @@ function formatCard( card, reversed, images )
     questions: [ card.question_0, card.question_1, card.question_2 ],
     id: card.name_short,
     bitmask: card.id,
-    more: getMore( card )
+    more: getMore( card, images )
   }
 }
 
