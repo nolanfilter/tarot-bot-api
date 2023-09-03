@@ -166,15 +166,7 @@ app.get( '/card', async ( req, res ) =>
   {
     error = 'no card name'
   }
-
-  // let metaText = getMetaText( card, imageLibrary );
-
-  // console.log( "\n" + card.name );
-  // console.log( metaText.metaText );
-  // console.log( metaText.upright );
-  // console.log( metaText.reversed );
-  // console.log( card.name + "\n" );
-
+  
   res.status( 200 ).send({ 
       response: response,
       error: error
@@ -669,25 +661,6 @@ function formatCard( card, reversed, images )
     more: getMore( card, images )
   }
 }
-
-// function getMetaText( card, images )
-// {
-//   return {
-//     metaText: '' +
-//     '<meta name="description" content="' + images[ card.name_short ].description + '">\n' +
-//     '<meta name="keywords" content="tarot bot, tarot, ' + card.name.toLowerCase() + '">\n' +
-//     '<meta property="og:image" content="' + images[ card.name_short ].sizes[ images[ card.name_short ].sizes.length - 1 ].upright + '" />\n' +
-//     '<meta property="og:title" content="' + card.name + '" />\n' +
-//     '<meta property="og:site_name" content="Tarot Bot" />\n' +
-//     '<meta property="og:type" content="website" />\n' +
-//     '<meta property="og:url" content="' + getMore( card, images ) + '" />\n' +
-//     '<meta property="og:image:alt" content="' + images[ card.name_short ].description + '" />\n' +
-//     '<meta property="og:description" content="' + images[ card.name_short ].description + '" />\n' +
-//     '<meta property="twitter:description" content="' + images[ card.name_short ].description + '" />\n',
-//     upright: images[ card.name_short ].sizes[ images[ card.name_short ].sizes.length - 1 ].upright,
-//     reversed: images[ card.name_short ].sizes[ images[ card.name_short ].sizes.length - 1 ].reversed,
-//   }
-// }
 
 require('./pages.js')(app)
 
