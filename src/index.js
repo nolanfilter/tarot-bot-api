@@ -240,6 +240,7 @@ app.get( '/daily', async ( req, res ) =>
   let dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
                       + monthNames[ Math.floor( seed / 1000000 ) ];
 
+  res.set('Cache-control', 'public, max-age=43200')
   res.status( 200 ).send({ 
       response: {
         card: response,
