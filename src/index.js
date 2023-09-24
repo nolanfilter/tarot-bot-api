@@ -14,9 +14,6 @@ const PORT = process.env.PORT || 3000
 
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-const analytics = require( '@vercel/analytics' );
-analytics.inject();
-
 let cards_api = fs.readFileSync( path.join( __dirname, './data/cards-api.json' ),'utf8' )
 let parsedCardsJSON = JSON.parse( cards_api )
 let cards = parsedCardsJSON.cards
