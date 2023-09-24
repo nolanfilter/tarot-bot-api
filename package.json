@@ -12,6 +12,7 @@
     "swagger-autogen": "node ./src/swagger.js"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.0.2",
     "dotenv": "^16.0.3",
     "express": "^4.15.2",
     "join-images": "^1.1.5",
