@@ -667,6 +667,6 @@ function formatCard( card, reversed, images )
 }
 
 require('./pages.js')(app)
-require('./rss.js')()
+require('./rss.js')(app)
 
 module.exports = { app, cards, formatCard }

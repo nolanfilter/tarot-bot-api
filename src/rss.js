@@ -3,10 +3,11 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 const path = require( 'path' )
 const fs = require( 'fs' )
 
-module.exports = function () {
+module.exports = function (app) {
 	
-    new CronJob( '0 9 * * *', async function()
+    app.get( '/cron', async ( req, res ) =>
     {
+    // #swagger.ignore = true
         const dailyResponse = await fetch( "https://api.tarotbot.cards/daily" );
           
         if( !dailyResponse.ok ) {
@@ -89,6 +90,8 @@ module.exports = function () {
             //     console.log( "successfully wrote to rss.xml" );
             // }
         })
-        
-    }, null, true, 'America/New_York');
+
+        res.status( 200 ).send()
+    })
+    
 }
