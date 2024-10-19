@@ -35,7 +35,7 @@ module.exports = function (app) {
         // console.log( dateValue )
         
         let date = new Date( dateValue )
-        date.setHours(13, 0, 0)
+        date.setUTCHours(13, 0, 0)
       
         let data = []
         data.push(
