@@ -204,52 +204,12 @@ app.get( '/daily', async ( req, res ) =>
 //  #swagger.parameters['date'] = { description: 'the day the returned card will represent in MMDDYYYY format. Default today' }
     seed = req.query.date
   }
-  else
-  {
-    let currentDate = new Date()
-    seed = ( currentDate.getUTCMonth() + 1 ) * 1000000 + currentDate.getUTCDate() * 10000 + currentDate.getUTCFullYear()
-  }
 
-  let index = 0;
-  let reversed = false;
-  
-  try
-  {
-    let rand = mulberry32( seed )
-
-    index = Math.floor( rand() * cards.length )
-    reversed = ( rand() < 0.5 )
-  }
-  catch (error) {}
-
-  let card = cards[ index ]
-
-  imageLibrary = tb_images
-
-  // await fetch('https://tarot-bot-api.vercel.app/custom')
-  // .then(res => res.json())
-  // .then(out => {
-  //   // test if url exists
-  //   // TODO check if url is empty
-  //   // hardcoded check, should just incorporate deck ugh
-  //   getImage( card.name_short, out, false )
-
-  //   imageLibrary = out
-  // })
-  // .catch();
-
-  response = formatCard( card, reversed, imageLibrary )
-  
-  let dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
-                      + monthNames[ Math.floor( seed / 1000000 ) ];
+  response = getDailyCardResponse( seed )
 
   res.set('Cache-control', 'public, max-age=43200')
   res.status( 200 ).send({ 
-      response: {
-        card: response,
-        date: seed,
-        dateString: dateString
-      },
+      response: response,
       error: error
   })
 })
@@ -646,6 +606,37 @@ function getImageData( key, images, reversed )
   return []
 }
 
+function getDailyCardResponse( seed )
+{
+  if( !seed || seed === 0 )
+  {
+    seed = (new Date()).toLocaleDateString("en-US").replace(/\//g, '')
+  }
+
+  let index = 0;
+  let reversed = false;
+  
+  try
+  {
+    let rand = mulberry32( seed )
+
+    index = Math.floor( rand() * cards.length )
+    reversed = ( rand() < 0.5 )
+  }
+  catch (error) {}
+
+  let card = formatCard( cards[ index ], reversed, tb_images )
+  
+  let dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
+                      + monthNames[ Math.floor( seed / 1000000 ) ];
+
+  return {
+    card: card,
+    date: seed,
+    dateString: dateString
+  }
+}
+
 function formatCard( card, reversed, images )
 {
   return {
@@ -667,6 +658,6 @@ function formatCard( card, reversed, images )
 }
 
 require('./pages.js')(app)
-require('./rss.js')(app)
+require('./rss.js')(app, getDailyCardResponse)
 
 module.exports = { app, cards, formatCard }
