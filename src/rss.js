@@ -75,7 +75,7 @@ module.exports = function (app, getDailyCardResponse) {
             "<item>",
             "<pubDate>" + date.toGMTString() + "</pubDate>",
             "<title>Reading for " + daily.dateString + "</title>",
-            "<link>https://www.tarotbot.cards</link>",
+            "<link>https://www.tarotbot.cards/?date=" + date.toISOString().slice(0,10) + "</link>",
             "<guid isPermaLink=\"false\">tb" + daily.date + "</guid>",
             "<description>",
             "<![CDATA[",
