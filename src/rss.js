@@ -24,7 +24,17 @@ module.exports = function (app, getDailyCardResponse) {
 
     function refreshRSS()
     { 
-        const daily = getDailyCardResponse( 0 )
+        var seed = 0
+
+        if( (new Date()).getUTCHours() < 13 )
+        {
+            var yesterday = new Date()
+            yesterday.setDate(yesterday.getDate() - 1)
+
+            seed = yesterday.toLocaleDateString("en-US").replace(/\//g, '')
+        }
+
+        const daily = getDailyCardResponse( seed )
             
         // console.log("daily: " + JSON.stringify(daily));
             
