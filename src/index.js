@@ -405,6 +405,74 @@ app.get( '/spread', async ( req, res ) =>
   })
 })
 
+app.get( '/archive', async ( req, res ) =>
+{
+// #swagger.description = 'Returns past Daily readings'
+  let error = null
+
+  let offset = 0
+  let limit = 100
+
+  if( req.query.offset )
+  {
+//  #swagger.parameters['offset'] = { description: 'the number of days in the past to start counting back from. Default 0' }
+    offset = req.query.offset
+  }
+
+  if( req.query.limit )
+  {
+//  #swagger.parameters['limit'] = { description: 'the maximum number of daily readings to return. Default 100, max 1000' }
+    limit = Math.min( req.query.limit, 1000 )
+  }
+
+  let readings = []
+  let card = {}
+
+  let seed = 0
+  let count = 0
+  let date = new Date()
+  date.setDate(date.getDate() - offset)
+  let dateString = ''
+
+  while( count < limit )
+  {
+    dateString = date.toLocaleDateString("en-US")
+    seed = dateString.replace(/\//g, '')
+  
+    let index = 0;
+    let reversed = false;
+    
+    try
+    {
+      let rand = mulberry32( seed )
+  
+      index = Math.floor( rand() * cards.length )
+      reversed = ( rand() < 0.5 )
+    }
+    catch (error) {}
+
+    card = cards[ index ]
+
+    readings.push({
+      image: getImage( card.name_short, tb_images, reversed ),
+      more: getMore( card, tb_images ),
+      date: dateString
+    })
+
+    date.setDate(date.getDate() - 1);
+
+    count++;
+  }
+
+  res.status( 200 ).send({ 
+      response: {
+        readings: readings,
+        length: readings.length,
+      },
+      error: error
+  })
+})
+
 // TODO remove
 app.get( '/test', async ( req, res ) =>
 {
