@@ -405,9 +405,9 @@ app.get( '/spread', async ( req, res ) =>
   })
 })
 
-app.get( '/archive', async ( req, res ) =>
+app.get( '/archive', ( req, res ) =>
 {
-// #swagger.description = 'Returns past Daily readings'
+// #swagger.description = 'Returns past Daily Readings'
   let error = null
 
   let offset = 0
@@ -464,10 +464,12 @@ app.get( '/archive', async ( req, res ) =>
     count++;
   }
 
+  res.set('Cache-control', 'public, max-age=43200')
   res.status( 200 ).send({ 
       response: {
         readings: readings,
-        length: readings.length,
+        offset: offset,
+        length: readings.length
       },
       error: error
   })
