@@ -436,8 +436,7 @@ app.get( '/archive', ( req, res ) =>
 
   while( count < limit )
   {
-    dateString = date.toLocaleDateString("en-US")
-    seed = dateString.replace(/\//g, '')
+    seed = date.toLocaleDateString("en-US").replace(/\//g, '')
   
     let index = 0;
     let reversed = false;
@@ -453,10 +452,16 @@ app.get( '/archive', ( req, res ) =>
 
     card = cards[ index ]
 
+    dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
+                    + monthNames[ Math.floor( seed / 1000000 ) ]
+
     readings.push({
+      title: card.name,
+      reversed: reversed,
       image: getImage( card.name_short, tb_images, reversed ),
       more: getMore( card, tb_images ),
-      date: dateString
+      date: seed,
+      dateString: dateString
     })
 
     date.setDate(date.getDate() - 1);
