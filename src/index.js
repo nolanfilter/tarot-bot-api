@@ -432,11 +432,13 @@ app.get( '/archive', ( req, res ) =>
   let count = 0
   let date = new Date()
   date.setDate(date.getDate() - offset)
+  let dateShort = ''
   let dateString = ''
 
   while( count < limit )
   {
-    seed = date.toLocaleDateString("en-US").replace(/\//g, '')
+    dateShort = date.toLocaleDateString("en-US")
+    seed = dateShort.replace(/\//g, '')
   
     let index = 0;
     let reversed = false;
@@ -461,6 +463,7 @@ app.get( '/archive', ( req, res ) =>
       image: getImage( card.name_short, tb_images, reversed ),
       more: getMore( card, tb_images ),
       date: seed,
+      dateShort: dateShort,
       dateString: dateString
     })
 
