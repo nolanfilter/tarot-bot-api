@@ -438,7 +438,7 @@ app.get( '/archive', ( req, res ) =>
   while( count < limit )
   {
     dateShort = date.toLocaleDateString("en-US")
-    seed = dateShort.replace(/\//g, '')
+    seed = ( date.getUTCMonth() + 1 ) * 1000000 + date.getUTCDate() * 10000 + date.getUTCFullYear()
   
     let index = 0;
     let reversed = false;
@@ -688,7 +688,8 @@ function getDailyCardResponse( seed )
 {
   if( !seed || seed === 0 )
   {
-    seed = (new Date()).toLocaleDateString("en-US").replace(/\//g, '')
+    const currentDate = new Date()
+    seed = ( currentDate.getUTCMonth() + 1 ) * 1000000 + currentDate.getUTCDate() * 10000 + currentDate.getUTCFullYear()
   }
 
   let index = 0;
