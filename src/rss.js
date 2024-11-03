@@ -26,12 +26,12 @@ module.exports = function (app, getDailyCardResponse) {
     { 
         var seed = 0
 
-        if( (new Date()).getUTCHours() < 13 )
+        if( (new Date()).getUTCHours() < 14 )
         {
             var yesterday = new Date()
             yesterday.setDate(yesterday.getDate() - 1)
 
-            seed = yesterday.toLocaleDateString("en-US").replace(/\//g, '')
+            seed = ( yesterday.getUTCMonth() + 1 ) * 1000000 + yesterday.getUTCDate() * 10000 + yesterday.getUTCFullYear()
         }
 
         const daily = getDailyCardResponse( seed )
