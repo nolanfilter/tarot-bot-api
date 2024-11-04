@@ -54,7 +54,7 @@ module.exports = function (app, getDailyCardResponse) {
         // console.log( dateValue )
         
         let date = new Date( dateValue )
-        date.setUTCHours(13, 0, 0)
+        date.setUTCHours(14, 0, 0)
         
         let data = []
         data.push(
