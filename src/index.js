@@ -31,10 +31,10 @@ let tb_images = JSON.parse( tb_image_urls )
 // console.log( fakeurl )
 
 app.use( '/css', express.static( path.join( __dirname, './css' ) ) )
-app.use( '/robots.txt', express.static( path.join( __dirname, './robots.txt' ) ) )
 
 app.use( '/favicon.ico', express.static( path.join( __dirname, '../public/images/favicon.ico' ) ) )
 app.use( '/favicon.png', express.static( path.join( __dirname, '../public/images/favicon.png' ) ) )
+app.use( '/robots.txt', express.static( path.join( __dirname, '../public/robots.txt' ) ) )
 
 // TODO cache?
 // app.get( '/custom', ( req, res ) =>
