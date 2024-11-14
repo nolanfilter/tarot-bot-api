@@ -411,19 +411,31 @@ app.get( '/archive', ( req, res ) =>
 // #swagger.description = 'Returns past Daily Readings'
   let error = null
 
-  let offset = 0
+  let date = new Date()
   let limit = 100
+  let offset = 0
 
-  if( req.query.offset )
+  if( req.query.start )
   {
-//  #swagger.parameters['offset'] = { description: 'the number of days in the past to start counting back from. Default 0' }
-    offset = req.query.offset
+//  #swagger.parameters['start'] = { description: 'the date to start counting back from, combines with offset. Default today' }
+    const startDate = new Date( req.query.start + 'T00:00:00' )
+
+    if( !isNaN( startDate ) )
+    {      
+      date = startDate
+    }
   }
 
   if( req.query.limit )
   {
-//  #swagger.parameters['limit'] = { description: 'the maximum number of daily readings to return. Default 100, max 1000' }
-    limit = Math.min( req.query.limit, 1000 )
+//  #swagger.parameters['limit'] = { description: 'the maximum number of daily readings to return. Default 100, max 10000' }
+    limit = Math.min( req.query.limit, 10000 )
+  }
+
+  if( req.query.offset )
+  {
+//  #swagger.parameters['offset'] = { description: 'the number of days in the past from the start date to count back from. Default 0' }
+    offset = req.query.offset
   }
 
   let readings = []
@@ -431,7 +443,6 @@ app.get( '/archive', ( req, res ) =>
 
   let seed = 0
   let count = 0
-  let date = new Date()
   date.setDate(date.getDate() - offset)
   let dateShort = ''
   let dateString = ''
