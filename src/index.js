@@ -123,69 +123,6 @@ app.get( '/random', async ( req, res ) =>
   })
 })
 
-app.get( '/card', async ( req, res ) =>
-{
-// #swagger.description = 'Returns a specific card'
-  let response = null
-  let error = null
-  let card = null;
-
-  if( req.query.name )
-  {
-//  #swagger.parameters['name'] = { description: 'String representation of the card' }
-    let queryName = req.query.name.toLowerCase().replace( /\s/g, '' )
-
-    for( let i = 0; i < cards.length; i++ )
-    {
-      let cardName = cards[ i ].name.toLowerCase().replace( /\s/g, '' )
-
-      if( cardName.indexOf( queryName ) >= 0 )
-      {
-        card = cards[ i ]
-        break;
-      }
-    }
-
-    if( card )
-    {
-//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns' }
-      imageLibrary = await getImageLibrary( req.query.images, card.name_short, reversed );
-
-      var reversed = false 
-
-      if( req.query.reversed )
-      {
-//  #swagger.parameters['reversed'] = { description: 'Return card as reversed. Default false' }
-        reversed = req.query.reversed
-      }
-
-      response = formatCard( card, reversed, imageLibrary )
-    }
-    else
-    {
-      error = `couldn't find card '` + queryName + `'`
-    }
-  }
-  else
-  {
-    error = 'no card name'
-  }
-  
-  res.status( 200 ).send({ 
-      response: response,
-      error: error
-  })
-})
-
-app.get( '/cards', ( req, res ) =>
-{
-// #swagger.description = 'Returns all cards'
-  res.status( 200 ).send({ 
-    response: cards,
-    error: null
-  })
-})
-
 // TODO cleanup
 const monthNames = [
   'Smarch', 'January', 'February', 'March', 'April', 'May', 'June',
@@ -215,6 +152,94 @@ app.get( '/daily', async ( req, res ) =>
   })
 })
 
+app.get( '/archive', ( req, res ) =>
+{
+// #swagger.description = 'Returns past Daily Readings'
+  let error = null
+
+  let date = new Date()
+  let limit = 100
+  let offset = 0
+
+  if( req.query.start )
+  {
+//  #swagger.parameters['start'] = { description: 'the date to start counting back from, combines with offset. Default today' }
+    const startDate = new Date( req.query.start + 'T00:00:00' )
+
+    if( !isNaN( startDate ) )
+    {      
+      date = startDate
+    }
+  }
+
+  if( req.query.limit )
+  {
+//  #swagger.parameters['limit'] = { description: 'the maximum number of daily readings to return. Default 100, max 10000' }
+    limit = Math.min( req.query.limit, 10000 )
+  }
+
+  if( req.query.offset )
+  {
+//  #swagger.parameters['offset'] = { description: 'the number of days in the past from the start date to count back from. Default 0' }
+    offset = req.query.offset
+  }
+
+  let readings = []
+  let card = {}
+
+  let seed = 0
+  let count = 0
+  date.setDate(date.getDate() - offset)
+  let dateShort = ''
+  let dateString = ''
+
+  while( count < limit )
+  {
+    dateShort = date.toLocaleDateString("en-US")
+    seed = ( date.getUTCMonth() + 1 ) * 1000000 + date.getUTCDate() * 10000 + date.getUTCFullYear()
+  
+    let index = 0;
+    let reversed = false;
+    
+    try
+    {
+      let rand = mulberry32( seed )
+  
+      index = Math.floor( rand() * cards.length )
+      reversed = ( rand() < 0.5 )
+    }
+    catch (error) {}
+
+    card = cards[ index ]
+
+    dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
+                    + monthNames[ Math.floor( seed / 1000000 ) ]
+
+    readings.push({
+      title: card.name,
+      reversed: reversed,
+      image: getImage( card.name_short, tb_images, reversed ),
+      more: getMore( card, tb_images ),
+      date: seed,
+      dateShort: dateShort,
+      dateString: dateString
+    })
+
+    date.setDate(date.getDate() - 1);
+
+    count++;
+  }
+
+  res.set('Cache-control', 'public, max-age=43200')
+  res.status( 200 ).send({ 
+      response: {
+        readings: readings,
+        offset: offset,
+        length: readings.length
+      },
+      error: error
+  })
+})
 
 app.get( '/spread', async ( req, res ) =>
 {
@@ -406,92 +431,66 @@ app.get( '/spread', async ( req, res ) =>
   })
 })
 
-app.get( '/archive', ( req, res ) =>
+app.get( '/card', async ( req, res ) =>
 {
-// #swagger.description = 'Returns past Daily Readings'
+// #swagger.description = 'Returns a specific card'
+  let response = null
   let error = null
+  let card = null;
 
-  let date = new Date()
-  let limit = 100
-  let offset = 0
-
-  if( req.query.start )
+  if( req.query.name )
   {
-//  #swagger.parameters['start'] = { description: 'the date to start counting back from, combines with offset. Default today' }
-    const startDate = new Date( req.query.start + 'T00:00:00' )
+//  #swagger.parameters['name'] = { description: 'String representation of the card' }
+    let queryName = req.query.name.toLowerCase().replace( /\s/g, '' )
 
-    if( !isNaN( startDate ) )
-    {      
-      date = startDate
-    }
-  }
-
-  if( req.query.limit )
-  {
-//  #swagger.parameters['limit'] = { description: 'the maximum number of daily readings to return. Default 100, max 10000' }
-    limit = Math.min( req.query.limit, 10000 )
-  }
-
-  if( req.query.offset )
-  {
-//  #swagger.parameters['offset'] = { description: 'the number of days in the past from the start date to count back from. Default 0' }
-    offset = req.query.offset
-  }
-
-  let readings = []
-  let card = {}
-
-  let seed = 0
-  let count = 0
-  date.setDate(date.getDate() - offset)
-  let dateShort = ''
-  let dateString = ''
-
-  while( count < limit )
-  {
-    dateShort = date.toLocaleDateString("en-US")
-    seed = ( date.getUTCMonth() + 1 ) * 1000000 + date.getUTCDate() * 10000 + date.getUTCFullYear()
-  
-    let index = 0;
-    let reversed = false;
-    
-    try
+    for( let i = 0; i < cards.length; i++ )
     {
-      let rand = mulberry32( seed )
-  
-      index = Math.floor( rand() * cards.length )
-      reversed = ( rand() < 0.5 )
+      let cardName = cards[ i ].name.toLowerCase().replace( /\s/g, '' )
+
+      if( cardName.indexOf( queryName ) >= 0 )
+      {
+        card = cards[ i ]
+        break;
+      }
     }
-    catch (error) {}
 
-    card = cards[ index ]
+    if( card )
+    {
+//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns' }
+      imageLibrary = await getImageLibrary( req.query.images, card.name_short, reversed );
 
-    dateString = '' + ( Math.floor( seed / 10000 ) % 100 ) + ' '
-                    + monthNames[ Math.floor( seed / 1000000 ) ]
+      var reversed = false 
 
-    readings.push({
-      title: card.name,
-      reversed: reversed,
-      image: getImage( card.name_short, tb_images, reversed ),
-      more: getMore( card, tb_images ),
-      date: seed,
-      dateShort: dateShort,
-      dateString: dateString
-    })
+      if( req.query.reversed )
+      {
+//  #swagger.parameters['reversed'] = { description: 'Return card as reversed. Default false' }
+        reversed = req.query.reversed
+      }
 
-    date.setDate(date.getDate() - 1);
-
-    count++;
+      response = formatCard( card, reversed, imageLibrary )
+    }
+    else
+    {
+      error = `couldn't find card '` + queryName + `'`
+    }
   }
-
-  res.set('Cache-control', 'public, max-age=43200')
+  else
+  {
+    error = 'no card name'
+  }
+  
   res.status( 200 ).send({ 
-      response: {
-        readings: readings,
-        offset: offset,
-        length: readings.length
-      },
+      response: response,
       error: error
+  })
+})
+
+app.get( '/cards', ( req, res ) =>
+{
+// #swagger.description = 'Returns all cards'
+  res.status( 200 ).send({ 
+    response: cards,
+    error: null
   })
 })
 
