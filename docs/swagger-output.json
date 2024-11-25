@@ -11,6 +11,9 @@
   "paths": {
     "/random": {
       "get": {
+        "tags": [
+          "Endpoints"
+        ],
         "description": "Returns a random card",
         "parameters": [
           {
@@ -27,7 +30,7 @@
           },
           {
             "name": "images",
-            "description": "The (encoded uri component) url of a formatted json file with urls or string keyword of a preexisting deck for card images and descriptions. rws, rider-waite, rider-waite-smith return Rider Waite Smith deck; tarotbot, tb return Tarot Bot deck. Default rws",
+            "description": "The (encoded uri component) url of a formatted json file with urls or string keyword of a preexisting deck for card images and descriptions. rws, rider-waite, rider-waite-smith return Rider Waite Smith deck; tarotbot, tb return Tarot Bot deck. You can visit https://api.tarotbot.cards/custom for an example of a custom deck json file. Default rws",
             "in": "query",
             "type": "string"
           }
@@ -41,6 +44,9 @@
     },
     "/daily": {
       "get": {
+        "tags": [
+          "Endpoints"
+        ],
         "description": "Returns a unique Tarot Card for the given date",
         "parameters": [
           {
@@ -59,6 +65,9 @@
     },
     "/archive": {
       "get": {
+        "tags": [
+          "Endpoints"
+        ],
         "description": "Returns past Daily Readings",
         "parameters": [
           {
@@ -89,6 +98,9 @@
     },
     "/spread": {
       "get": {
+        "tags": [
+          "Endpoints"
+        ],
         "description": "Returns multiple random cards in the defined arrangement. EXPERIMENTAL (please be gentle)",
         "parameters": [
           {
@@ -107,6 +119,9 @@
     },
     "/card": {
       "get": {
+        "tags": [
+          "Endpoints"
+        ],
         "description": "Returns a specific card",
         "parameters": [
           {
@@ -137,6 +152,9 @@
     },
     "/cards": {
       "get": {
+        "tags": [
+          "Endpoints"
+        ],
         "description": "Returns all cards",
         "parameters": [],
         "responses": {

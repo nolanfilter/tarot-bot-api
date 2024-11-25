@@ -29,5 +29,11 @@ module.exports = function (app) {
       res.sendFile( path.join( __dirname, '../public/test.html' ) )
     })
 
+    app.get( '/custom', ( req, res ) =>
+    {
+    // #swagger.ignore = true
+      res.sendFile( path.join( __dirname, './data/custom-image-urls.json' ) )
+    })
+
     app.use( '/docs', swaggerUi.serve, swaggerUi.setup( swaggerFile, options ) )
 }

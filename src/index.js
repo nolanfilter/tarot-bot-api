@@ -24,6 +24,11 @@ let rws_images = JSON.parse( rws_image_urls )
 let tb_image_urls = fs.readFileSync( path.join( __dirname, './data/custom-image-urls.json' ),'utf8' )
 let tb_images = JSON.parse( tb_image_urls )
 
+// Fake month at subindex 0 to align with date representation
+const monthNames = [
+  'Smarch', 'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 
 // let fakeurl = encodeURIComponent( 'localhost:3000/custom' )
 // let fakeurl = encodeURIComponent( 'https://tarot-bot-api.vercel.app/custom' )
@@ -45,6 +50,7 @@ app.use( '/robots.txt', express.static( path.join( __dirname, '../public/robots.
 
 app.get( '/random', async ( req, res ) =>
 {
+// #swagger.tags = ['Endpoints']
 // #swagger.description = 'Returns a random card'
   let response = null
   let error = null
@@ -107,7 +113,7 @@ app.get( '/random', async ( req, res ) =>
   
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
-//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls or string keyword of a preexisting deck for card images and descriptions. rws, rider-waite, rider-waite-smith return Rider Waite Smith deck; tarotbot, tb return Tarot Bot deck. Default rws' }
+//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls or string keyword of a preexisting deck for card images and descriptions. rws, rider-waite, rider-waite-smith return Rider Waite Smith deck; tarotbot, tb return Tarot Bot deck. You can visit https://api.tarotbot.cards/custom for an example of a custom deck json file. Default rws' }
   imageLibrary = await getImageLibrary( req.query.images, card.name_short, reversed );
 
   response = formatCard( card, reversed, imageLibrary )
@@ -123,14 +129,9 @@ app.get( '/random', async ( req, res ) =>
   })
 })
 
-// TODO cleanup
-const monthNames = [
-  'Smarch', 'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
-
 app.get( '/daily', async ( req, res ) =>
 {
+// #swagger.tags = ['Endpoints']
 // #swagger.description = 'Returns a unique Tarot Card for the given date'
   let response = null
   let error = null
@@ -154,6 +155,7 @@ app.get( '/daily', async ( req, res ) =>
 
 app.get( '/archive', ( req, res ) =>
 {
+// #swagger.tags = ['Endpoints']
 // #swagger.description = 'Returns past Daily Readings'
   let error = null
 
@@ -243,6 +245,7 @@ app.get( '/archive', ( req, res ) =>
 
 app.get( '/spread', async ( req, res ) =>
 {
+// #swagger.tags = ['Endpoints']
 // #swagger.description = 'Returns multiple random cards in the defined arrangement. EXPERIMENTAL (please be gentle)'
   let url = ''
   let response = []
@@ -435,6 +438,7 @@ app.get( '/spread', async ( req, res ) =>
 
 app.get( '/card', async ( req, res ) =>
 {
+// #swagger.tags = ['Endpoints']
 // #swagger.description = 'Returns a specific card'
   let response = null
   let error = null
@@ -489,6 +493,7 @@ app.get( '/card', async ( req, res ) =>
 
 app.get( '/cards', ( req, res ) =>
 {
+// #swagger.tags = ['Endpoints']
 // #swagger.description = 'Returns all cards'
   res.status( 200 ).send({ 
     response: cards,
