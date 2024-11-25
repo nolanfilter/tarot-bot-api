@@ -15,7 +15,7 @@
         "parameters": [
           {
             "name": "deck",
-            "description": "Bit mask or string representation of subset of deck. Used to limit deck to major or minor arcana only, or remove cards from the deck as they’re drawn.",
+            "description": "Bit mask or string representation of subset of deck. Used to limit deck to major or minor arcana only, or remove cards from the deck as they’re drawn. You can use https://api.tarotbot.cards/calculator to calculate the deck state",
             "in": "query",
             "type": "string"
           },

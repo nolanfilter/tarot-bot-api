@@ -56,7 +56,7 @@ app.get( '/random', async ( req, res ) =>
 
   if( req.query.deck )
   {
-//  #swagger.parameters['deck'] = { description: 'Bit mask or string representation of subset of deck. Used to limit deck to major or minor arcana only, or remove cards from the deck as they’re drawn.' }
+//  #swagger.parameters['deck'] = { description: 'Bit mask or string representation of subset of deck. Used to limit deck to major or minor arcana only, or remove cards from the deck as they’re drawn. You can use https://api.tarotbot.cards/calculator to calculate the deck state' }
     cardPool = []
     let deck = req.query.deck
 
