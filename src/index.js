@@ -107,7 +107,7 @@ app.get( '/random', async ( req, res ) =>
   
   let card = cardPool[ Math.floor( Math.random() * cardPool.length ) ]
 
-//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns' }
+//  #swagger.parameters['images'] = { description: 'The (encoded uri component) url of a formatted json file with urls or string keyword of a preexisting deck for card images and descriptions. rws, rider-waite, rider-waite-smith return Rider Waite Smith deck; tarotbot, tb return Tarot Bot deck. Default rws' }
   imageLibrary = await getImageLibrary( req.query.images, card.name_short, reversed );
 
   response = formatCard( card, reversed, imageLibrary )
@@ -139,7 +139,7 @@ app.get( '/daily', async ( req, res ) =>
 
   if( req.query.date )
   {
-//  #swagger.parameters['date'] = { description: 'the day the returned card will represent in MMDDYYYY format. Default today' }
+//  #swagger.parameters['date'] = { description: 'The day the returned card will represent in MMDDYYYY format. Default today' }
     seed = req.query.date
   }
 
@@ -163,7 +163,7 @@ app.get( '/archive', ( req, res ) =>
 
   if( req.query.start )
   {
-//  #swagger.parameters['start'] = { description: 'the date to start counting back from, combines with offset. Default today' }
+//  #swagger.parameters['start'] = { description: 'The date to start counting back from, combines with offset. Default today' }
     const startDate = new Date( req.query.start + 'T00:00:00' )
 
     if( !isNaN( startDate ) )
@@ -174,13 +174,13 @@ app.get( '/archive', ( req, res ) =>
 
   if( req.query.limit )
   {
-//  #swagger.parameters['limit'] = { description: 'the maximum number of daily readings to return. Default 100, max 10000' }
+//  #swagger.parameters['limit'] = { description: 'The maximum number of daily readings to return. Default 100, max 10000' }
     limit = Math.min( req.query.limit, 10000 )
   }
 
   if( req.query.offset )
   {
-//  #swagger.parameters['offset'] = { description: 'the number of days in the past from the start date to count back from. Default 0' }
+//  #swagger.parameters['offset'] = { description: 'The number of days in the past from the start date to count back from. Default 0' }
     offset = req.query.offset
   }
 
@@ -243,6 +243,7 @@ app.get( '/archive', ( req, res ) =>
 
 app.get( '/spread', async ( req, res ) =>
 {
+// #swagger.description = 'Returns multiple random cards in the defined arrangement. EXPERIMENTAL (please be gentle)'
   let url = ''
   let response = []
   let error = null
@@ -269,6 +270,7 @@ app.get( '/spread', async ( req, res ) =>
   // TODO error checking
   if( req.query.format )
   {
+//  #swagger.parameters['format'] = { description: 'The numerical dimensions (ie 900,530) and card positions (ie 300,0) describing the arrangement or a string keyword of a preexisting arrangement. Note: a card’s default dimensions are 300x530. Example: pastpresentfuture is identical to 900,530,0,0,300,0,600,0. Default pastpresentfuture' }
     layout = req.query.format;
   }
 

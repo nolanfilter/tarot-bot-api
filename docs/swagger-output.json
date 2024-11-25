@@ -27,7 +27,7 @@
           },
           {
             "name": "images",
-            "description": "The (encoded uri component) url of a formatted json file with urls for card images. Used to change the images that tarot bot returns",
+            "description": "The (encoded uri component) url of a formatted json file with urls or string keyword of a preexisting deck for card images and descriptions. rws, rider-waite, rider-waite-smith return Rider Waite Smith deck; tarotbot, tb return Tarot Bot deck. Default rws",
             "in": "query",
             "type": "string"
           }
@@ -45,7 +45,7 @@
         "parameters": [
           {
             "name": "date",
-            "description": "the day the returned card will represent in MMDDYYYY format. Default today",
+            "description": "The day the returned card will represent in MMDDYYYY format. Default today",
             "in": "query",
             "type": "string"
           }
@@ -63,19 +63,19 @@
         "parameters": [
           {
             "name": "start",
-            "description": "the date to start counting back from, combines with offset. Default today",
+            "description": "The date to start counting back from, combines with offset. Default today",
             "in": "query",
             "type": "string"
           },
           {
             "name": "limit",
-            "description": "the maximum number of daily readings to return. Default 100, max 10000",
+            "description": "The maximum number of daily readings to return. Default 100, max 10000",
             "in": "query",
             "type": "string"
           },
           {
             "name": "offset",
-            "description": "the number of days in the past from the start date to count back from. Default 0",
+            "description": "The number of days in the past from the start date to count back from. Default 0",
             "in": "query",
             "type": "string"
           }
@@ -89,10 +89,11 @@
     },
     "/spread": {
       "get": {
-        "description": "",
+        "description": "Returns multiple random cards in the defined arrangement. EXPERIMENTAL (please be gentle)",
         "parameters": [
           {
             "name": "format",
+            "description": "The numerical dimensions (ie 900,530) and card positions (ie 300,0) describing the arrangement or a string keyword of a preexisting arrangement. Note: a card’s default dimensions are 300x530. Example: pastpresentfuture is identical to 900,530,0,0,300,0,600,0. Default pastpresentfuture",
             "in": "query",
             "type": "string"
           }
