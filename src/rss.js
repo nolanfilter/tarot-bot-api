@@ -48,6 +48,13 @@ module.exports = function (app, getDailyCardResponse) {
                     
         var dateValue = String( daily.date )
         // console.log( dateValue )
+
+        if( dateValue.length < 10 )
+        {
+            dateValue = '0' + dateValue;
+        }
+
+        // console.log( dateValue )
         
         dateValue = dateValue.substring( 0, 2 ) + "/" + dateValue.substring( 2, 4 ) + "/" + dateValue.substring( 4, 8 )
         
@@ -55,6 +62,9 @@ module.exports = function (app, getDailyCardResponse) {
         
         let date = new Date( dateValue )
         date.setUTCHours(14, 0, 0)
+
+        // console.log( date )
+        // console.log( date.toISOString() )
         
         let data = []
         data.push(
