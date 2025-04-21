@@ -502,6 +502,62 @@ app.get( '/cards', ( req, res ) =>
 })
 
 // TODO remove
+// app.get( '/dailyblob', async ( req, res ) =>
+// {
+// // #swagger.ignore = true
+//   let response = getDailyCardResponse( 0 );
+
+//   // console.log( JSON.stringify( response ) )
+
+//   var image_url = response.card.image;
+
+//   console.log( image_url )
+
+//   let blobResponse = null;
+        
+//   if( response.card.hasOwnProperty( 'image_data' ) ) {
+//     const big_image_url = response.card.image_data[ response.card.image_data.sizes[ response.card.image_data.sizes.length - 1 ] ].url;
+    
+//     try {
+//       blobResponse = await fetch( big_image_url );
+
+//       console.log( JSON.stringify( blobResponse ) );
+
+//       if( blobResponse.headers[ 'content-length'] < 975000 )
+//       {
+//         // console.log( 'big is small enough' );
+
+//         blobResponse = null;
+//       }
+//       else
+//       {
+//         console.log( 'big is too big' );
+//       }
+//     }
+//     catch (error) {
+//       console.log(error);
+//     }
+//   }
+  
+//   if( !blobResponse )
+//   {
+//     console.log( "fetching" )
+//     blobResponse = await fetch( image_url );   
+//   }
+  
+//   console.log( blobResponse );
+
+//   const blob = await blobResponse.blob();
+
+//   console.log( blob );
+
+//   res.status( 200 ).send({ 
+//     response: blob,
+//     error: null
+//   })
+// })
+
+// TODO remove
 app.get( '/test', async ( req, res ) =>
 {
 // #swagger.ignore = true
